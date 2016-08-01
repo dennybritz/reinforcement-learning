@@ -1,31 +1,40 @@
-#### Overview
+#### Overview and Structure
 
-The goal for this repository is to become a comprehensive tutorial of Reinforcement Learning techniques. The focus is on practical applications and code examples. This does not mean that theory will be ignored completely, just that there will be fewer formal proofs than you may find a typical university course.
+The goal for this repository is to become a comprehensive tutorial of Reinforcement Learning techniques. The focus is on practical applications and code examples. This does not mean that theory is completely ignored, just that there will be fewer formal proofs and more code examples than you may find in a typical university course.
+
+Whenever possible, this tutorial references outside learning materials to introduce new concepts. These resources are usually from:
+
+- [David Silver's Reinforcement Learning Course](http://www0.cs.ucl.ac.uk/staff/d.silver/web/Teaching.html)
+- [Reinforcement Learning: An Introduction](https://www.dropbox.com/s/b3psxv2r0ccmf80/book2015oct.pdf)
+- [Reinforcement Learning at Georgia Tech (CS 8803)](https://www.udacity.com/course/reinforcement-learning--ud600)
+- Various Research papers
 
 All code is written in Python 3 and the RL environments are taken from [OpenAI Gym](https://gym.openai.com/). Advanced techniques use [Tensorflow](tensorflow.org/) for neural network implementations.
 
 
-
 #### Contents
 
-- Introduction to MDPs, RL problems and OpenAI gym
-- Model-Based Reinforcement Learning, Bellman Equation, and exact solutions
+- [Introduction to RL problems, OpenAI gym](Introduction/)
+- [MDPs and Bellman Equations](MDP/)
+- Model-Based RL: Policy and Value Iteration using Dynamic Programming
 - Model-Free Prediction & Control (MC, TD)
 - Model-Free Prediction & Control with Function Approximation
 - Deep Q Learning
 - Policy Gradient Methods
-- Asynchronous RL Methods (A3C)
+- Policy Gradient Methods with Function Approximation
+- Asynchronous Policy Gradient Methods (A3C)
 - Learning and Planning
-
-
 
 #### References
 
-Classes / Projects:
+Classes:
 
 - [David Silver's Reinforcement Learning Course](http://www0.cs.ucl.ac.uk/staff/d.silver/web/Teaching.html)
 - [Reinforcement Learning: An Introduction](https://webdocs.cs.ualberta.ca/~sutton/book/the-book.html)
 - [Reinforcement Learning at Georgia Tech (CS 8803)](https://www.udacity.com/course/reinforcement-learning--ud600)
+
+Projects:
+
 - [carpedm20/deep-rl-tensorflow](https://github.com/carpedm20/deep-rl-tensorflow)
 
 Papers
