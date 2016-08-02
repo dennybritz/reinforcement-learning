@@ -16,9 +16,10 @@ All code is written in Python 3 and the RL environments are taken from [OpenAI G
 
 - [Introduction to RL problems, OpenAI gym](Introduction/)
 - [MDPs and Bellman Equations](MDP/)
-- Model-Based RL: Policy and Value Iteration using Dynamic Programming
-- Model-Free Prediction & Control (MC, TD)
-- Model-Free Prediction & Control with Function Approximation
+- [Model-Based RL: Policy and Value Iteration using Dynamic Programming](DP/)
+- [Model-Free Prediction & Control with Monte Carlo (MC)](MC/)
+- [Model-Free Prediction & Control with Temporal Difference (TD)](TD/)
+- Function Approximation
 - Deep Q Learning
 - Policy Gradient Methods
 - Policy Gradient Methods with Function Approximation
@@ -36,6 +37,7 @@ Classes:
 Projects:
 
 - [carpedm20/deep-rl-tensorflow](https://github.com/carpedm20/deep-rl-tensorflow)
+- [matthiasplappert/keras-rl](https://github.com/matthiasplappert/keras-rl)
 
 Papers
 
