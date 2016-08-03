@@ -19,12 +19,13 @@ All code is written in Python 3 and the RL environments are taken from [OpenAI G
 - [Model-Based RL: Policy and Value Iteration using Dynamic Programming](DP/)
 - [Model-Free Prediction & Control with Monte Carlo (MC)](MC/)
 - [Model-Free Prediction & Control with Temporal Difference (TD)](TD/)
-- Function Approximation
-- Deep Q Learning
-- Policy Gradient Methods
-- Policy Gradient Methods with Function Approximation
-- Asynchronous Policy Gradient Methods (A3C)
+- [Function Approximation](FA/)
+- [Deep Q Learning](DeepQ/)
+- [Policy Gradient Methods](PolicyGradient/)
 - Learning and Planning
+- Exploration and Exploitation
+
+
 
 #### References
 
@@ -33,6 +34,7 @@ Classes:
 - [David Silver's Reinforcement Learning Course](http://www0.cs.ucl.ac.uk/staff/d.silver/web/Teaching.html)
 - [Reinforcement Learning: An Introduction](https://webdocs.cs.ualberta.ca/~sutton/book/the-book.html)
 - [Reinforcement Learning at Georgia Tech (CS 8803)](https://www.udacity.com/course/reinforcement-learning--ud600)
+- [Berkeley's CS 294: Deep Reinforcement Learning, Fall 2015](http://rll.berkeley.edu/deeprlcourse/)
 
 Projects:
 
