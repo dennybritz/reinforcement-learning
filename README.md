@@ -36,12 +36,17 @@ Classes:
 - [Reinforcement Learning at Georgia Tech (CS 8803)](https://www.udacity.com/course/reinforcement-learning--ud600)
 - [Berkeley's CS 294: Deep Reinforcement Learning, Fall 2015](http://rll.berkeley.edu/deeprlcourse/)
 
+Talks:
+
+- [Tutorial: Introduction to Reinforcement Learning with Function Approximation](https://www.youtube.com/watch?v=ggqnxyjaKe4)
+- [John Schulman - Deep Reinforcement Learning (4 Lectures)](https://www.youtube.com/playlist?list=PLjKEIQlKCTZYN3CYBlj8r58SbNorobqcp)
+
 Projects:
 
 - [carpedm20/deep-rl-tensorflow](https://github.com/carpedm20/deep-rl-tensorflow)
 - [matthiasplappert/keras-rl](https://github.com/matthiasplappert/keras-rl)
 
-Papers
+Papers:
 
 - [Human-Level Control through Deep Reinforcement Learning (2015-02)](http://www.readcube.com/articles/10.1038/nature14236)
 - [Deep Reinforcement Learning with Double Q-learning (2015-09)](http://arxiv.org/abs/1509.06461)
