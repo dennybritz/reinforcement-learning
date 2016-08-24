@@ -1,8 +1,6 @@
 #### Overview and Structure
 
-The goal for this repository is to become a comprehensive tutorial of Reinforcement Learning techniques. The focus is on practical applications and code examples. This does not mean that theory is completely ignored, just that there will be fewer formal proofs and more code examples than you may find in a typical university course.
-
-Whenever possible, this tutorial references outside learning materials to introduce new concepts. These resources are usually from:
+The goal for this repository is to become a comprehensive tutorial of Reinforcement Learning techniques. The focus is on code examples and exercises. To avoid reinventing the wheel I reference outside learning materials to introduce new concepts. These resources are usually from:
 
 - [David Silver's Reinforcement Learning Course](http://www0.cs.ucl.ac.uk/staff/d.silver/web/Teaching.html)
 - [Reinforcement Learning: An Introduction](https://www.dropbox.com/s/b3psxv2r0ccmf80/book2015oct.pdf)
@@ -14,17 +12,17 @@ All code is written in Python 3 and the RL environments are taken from [OpenAI G
 
 #### Contents
 
-- [Introduction to RL problems, OpenAI gym](Introduction/)
-- [MDPs and Bellman Equations](MDP/)
-- [Model-Based RL: Policy and Value Iteration using Dynamic Programming](DP/)
-- [Model-Free Prediction & Control with Monte Carlo (MC)](MC/)
-- [Model-Free Prediction & Control with Temporal Difference (TD)](TD/)
-- [Function Approximation](FA/)
-- [Deep Q Learning](DeepQ/)
-- [Policy Gradient Methods](PolicyGradient/)
-- Learning and Planning
-- Exploration and Exploitation
 
+- [Introduction to RL problems, OpenAI gym](Introduction/) (08/28/2016)
+- [MDPs and Bellman Equations](MDP/) (08/28/2016)
+- [Model-Based RL: Policy and Value Iteration using Dynamic Programming](DP/) (08/28/2016)
+- [Model-Free Prediction & Control with Monte Carlo (MC)](MC/) (08/28/2016)
+- [Model-Free Prediction & Control with Temporal Difference (TD)](TD/) (09/04/2016)
+- [Function Approximation](FA/) (09/11/2016)
+- [Deep Q Learning](DeepQ/) (09/18/2016)
+- [Policy Gradient Methods](PolicyGradient/) (09/25/2016)
+- Learning and Planning (TBD)
+- Exploration and Exploitation (TBD)
 
 
 #### References

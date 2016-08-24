@@ -5,8 +5,7 @@
 - Understand the difference between Policy Evaluation and Policy Improvement and how these processes interact
 - Understand the Policy Iteration Algorithm
 - Understand the Value Iteration Algorithm
-- Be able to describe RL methods as Generalized Policy Iteration
-- Understand the Limitation of Dynamic Programming Approaches
+- Understand the Limitations of Dynamic Programming Approaches
 
 
 ### Lectures & Readings
@@ -22,4 +21,6 @@
 
 ### Exercises
 
-TODO
+- [Implement Policy Evaluation in Python (Gridworld)](Policy Evaluation.ipynb)
+- [Implement Policy Iteration in Python (Gridworld)](Policy Iteration.ipynb)
+- [Implement Value Iteration in Python (Gridworld)](Value Iteration.ipynb)
