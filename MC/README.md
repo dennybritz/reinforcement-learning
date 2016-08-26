@@ -25,7 +25,7 @@
 
 ### Exercises
 
-- Implement the MC method to estimate state values in Python
-- Implement the MC method to estimate state-action values in Python
-- Implement the on-policy first-visit MC control algorithm in Python
-- Implement the off-policy every-visit MC control algorithm in Python
+- [Get familar with the Blackjack environment (Blackjack-v0)](Blackjack Playground.ipynb)
+- Implement the Monte Carlo Prediction to estimate state-action values in Python
+- Implement the on-policy first-visit Monte Carlo Control algorithm in Python
+- Implement the off-policy every-visit Monte Carlo Control algorithm in Python
