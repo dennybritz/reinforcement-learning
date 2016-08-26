@@ -26,6 +26,6 @@
 ### Exercises
 
 - [Get familar with the Blackjack environment (Blackjack-v0)](Blackjack Playground.ipynb)
-- Implement the Monte Carlo Prediction to estimate state-action values in Python
+- [Implement the Monte Carlo Prediction to estimate state-action values in Python](MC Prediction.ipynb) ([Solution]([Implement the Monte Carlo Prediction to estimate state-action values in Python](MC Prediction Solution.ipynb)))
 - Implement the on-policy first-visit Monte Carlo Control algorithm in Python
 - Implement the off-policy every-visit Monte Carlo Control algorithm in Python
