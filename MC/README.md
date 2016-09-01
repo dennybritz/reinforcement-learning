@@ -26,9 +26,6 @@
 ### Exercises
 
 1. [Get familar with the Blackjack environment (Blackjack-v0)](Blackjack Playground.ipynb)
-
-2. [Implement the Monte Carlo Prediction to estimate state-action values in Python](MC Prediction.ipynb) ([Solution]([Implement the Monte Carlo Prediction to estimate state-action values in Python](MC Prediction (Solution).ipynb)))
-
-3. [Implement the on-policy first-visit Monte Carlo Control algorithm in Python](MC Control with Epsilon-Greedy Policies) ([Solution](http://localhost:8890/notebooks/MC/MC%20Control%20with%20Epsilon-Greedy%20Policies%20(Solution).ipynb))
-
-4. [Implement the off-policy every-visit Monte Carlo Control using Weighted Important Sampliing algorithm in Python](Off-Policy MC Control with Weighted Importance Sampling) ([Solution](Off-Policy MC Control with Weighted Importance Sampling (Solution)))
+2. Implement the Monte Carlo Prediction to estimate state-action values in Python ([Exercise](MC Prediction.ipynb), [Solution](MC Prediction (Solution).ipynb))
+3. Implement the on-policy first-visit Monte Carlo Control algorithm in Python ([Exercise](MC Control with Epsilon-Greedy Policies.ipynb), [Solution](MC Control with Epsilon-Greedy Policies (Solution).ipynb))
+4. Implement the off-policy every-visit Monte Carlo Control using Weighted Important Sampliing algorithm in Python ([Exercise](Off-Policy MC Control with Weighted Importance Sampling.ipynb), [Solution](Off-Policy MC Control with Weighted Importance Sampling (Solution).ipynb))
