@@ -6,8 +6,9 @@
 - Understand the difference between Prediction and Control
 - Know how to use the MC method for predicting state values and state-action values
 - Understand the on-policy first-visit MC control algorithm
-- Understand the off-policy every-visit MC control algorithm
-- Understand the benefits of MC algorithms over the DP approach
+- Understand off-policy MC control algorithms
+- Understand Weighted Importance Sampling
+- Understand the benefits of MC algorithms over the Dynamic Programming approach
 
 
 ### Lectures & Readings
