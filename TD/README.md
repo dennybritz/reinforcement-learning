@@ -3,10 +3,10 @@
 
 ### Learning Goals
 
-- Understand how to use the TD-0 algorithm for prediction
-- Understand how to use SARSA for on-policy control
-- Understand how to use Q-Learning for off-policy control
-- Understand the benefits of TD algorithms over the MC approach
+- Understand TD-0 for prediction
+- Understand SARSA for on-policy control
+- Understand Q-Learning for off-policy control
+- Understand the benefits of TD algorithms over the MC/DP approach
 - Understand the backward and forward view of TD-Lambda
 
 
@@ -24,6 +24,7 @@
 
 ### Exercises
 
-- Implement the SARSA in Python
-- Implement the Q-Learning in Python
+- Windy Gridworld Environment Playground
+- Implement SARSA in Python
+- Implement Q-Learning in Python
 - Implement SARSA-Lambda in Python using Eligibility Traces
