@@ -1,4 +1,4 @@
-#### Overview and Structure
+### Overview and Structure
 
 The goal of this repository is to provide code, exercises and solutions of popular Reinforcement Learning algorithms. These are meant to serve as a learning tool to complement the theoretical materials from
 
@@ -10,7 +10,7 @@ Each folder in this repository corresponds to one or more chapters of the above 
 All code is written in Python 3 and the RL environments are taken from [OpenAI Gym](https://gym.openai.com/). Advanced techniques use [Tensorflow](tensorflow.org/) for neural network implementations.
 
 
-#### Contents
+### Table of Contents
 
 - [Introduction to RL problems, OpenAI gym](Introduction/)
 - [MDPs and Bellman Equations](MDP/)
@@ -24,7 +24,7 @@ All code is written in Python 3 and the RL environments are taken from [OpenAI G
 - Exploration and Exploitation (WIP)
 
 
-#### Resources
+### Resources
 
 Textbooks:
 
