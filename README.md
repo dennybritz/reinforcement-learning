@@ -5,21 +5,23 @@ The goal of this repository is to provide code, exercises and solutions of popul
 - [Reinforcement Learning: An Introduction (2nd Edition)](https://www.dropbox.com/s/d6fyn4a5ag3atzk/bookdraft2016aug.pdf?dl=0)
 - [David Silver's Reinforcement Learning Course](http://www0.cs.ucl.ac.uk/staff/d.silver/web/Teaching.html)
 
+Each folder in this repository corresponds to one or more chapters of the above textbook and/or course. In addition to exercises and solution each folder also contains a list of learning goals, a brief concept summary, and links to the relevant readings.
+
 All code is written in Python 3 and the RL environments are taken from [OpenAI Gym](https://gym.openai.com/). Advanced techniques use [Tensorflow](tensorflow.org/) for neural network implementations.
 
 
 #### Contents
 
-- [Introduction to RL problems, OpenAI gym](Introduction/) (08/28/2016)
-- [MDPs and Bellman Equations](MDP/) (08/28/2016)
-- [Model-Based RL: Policy and Value Iteration using Dynamic Programming](DP/) (08/28/2016)
-- [Model-Free Prediction & Control with Monte Carlo (MC)](MC/) (09/04/2016)
-- [Model-Free Prediction & Control with Temporal Difference (TD)](TD/) (09/11/2016)
-- [Function Approximation](FA/) (09/18/2016)
-- [Deep Q Learning](DeepQ/) (09/25/2016)
-- [Policy Gradient Methods](PolicyGradient/) (10/02/2016)
-- Learning and Planning (TBD)
-- Exploration and Exploitation (TBD)
+- [Introduction to RL problems, OpenAI gym](Introduction/)
+- [MDPs and Bellman Equations](MDP/)
+- [Model-Based RL: Policy and Value Iteration using Dynamic Programming](DP/)
+- [Model-Free Prediction & Control with Monte Carlo (MC)](MC/)
+- [Model-Free Prediction & Control with Temporal Difference (TD)](TD/) (WIP)
+- [Function Approximation](FA/) (WIP)
+- [Deep Q Learning](DeepQ/) (WIP)
+- [Policy Gradient Methods](PolicyGradient/) (WIP)
+- Learning and Planning (WIP)
+- Exploration and Exploitation (WIP)
 
 
 #### Resources
