@@ -17,8 +17,8 @@
 **Optional:**
 
 - [Tutorial: Introduction to Reinforcement Learning with Function Approximation](https://www.youtube.com/watch?v=ggqnxyjaKe4)
-- [Reinforcement Learning: An Introduction](https://www.dropbox.com/s/b3psxv2r0ccmf80/book2015oct.pdf) - Chapter 9: On-policy Prediction with Approximation (Under Construction)
-- [Reinforcement Learning: An Introduction](https://www.dropbox.com/s/b3psxv2r0ccmf80/book2015oct.pdf) - Chapter 10: On-policy Control with Approximation (Under Construction)
+- [Reinforcement Learning: An Introduction](https://www.dropbox.com/s/d6fyn4a5ag3atzk/bookdraft2016aug.pdf) - Chapter 9: On-policy Prediction with Approximation (Under Construction)
+- [Reinforcement Learning: An Introduction](https://www.dropbox.com/s/d6fyn4a5ag3atzk/bookdraft2016aug.pdf) - Chapter 10: On-policy Control with Approximation (Under Construction)
 
 
 ### Exercises

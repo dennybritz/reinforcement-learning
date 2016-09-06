@@ -15,7 +15,7 @@
 
 **Optional:**
 
-- [Reinforcement Learning: An Introduction](https://www.dropbox.com/s/b3psxv2r0ccmf80/book2015oct.pdf) - Chapter 3: Finite Markov Decision Processes
+- [Reinforcement Learning: An Introduction](https://www.dropbox.com/s/d6fyn4a5ag3atzk/bookdraft2016aug.pdf) - Chapter 3: Finite Markov Decision Processes
 
 
 ### Exercises

@@ -17,7 +17,7 @@
 
 **Optional:**
 
-- [Reinforcement Learning: An Introduction](https://www.dropbox.com/s/b3psxv2r0ccmf80/book2015oct.pdf) - Chapter 11: Policy Gradient Methods (Under Construction)
+- [Reinforcement Learning: An Introduction](https://www.dropbox.com/s/d6fyn4a5ag3atzk/bookdraft2016aug.pdf) - Chapter 11: Policy Gradient Methods (Under Construction)
 - [Asynchronous Methods for Deep Reinforcement Learning](https://arxiv.org/abs/1602.01783)
 
 
