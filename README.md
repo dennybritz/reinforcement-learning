@@ -16,7 +16,7 @@ All code is written in Python 3 and the RL environments are taken from [OpenAI G
 - [MDPs and Bellman Equations](MDP/)
 - [Model-Based RL: Policy and Value Iteration using Dynamic Programming](DP/)
 - [Model-Free Prediction & Control with Monte Carlo (MC)](MC/)
-- [Model-Free Prediction & Control with Temporal Difference (TD)](TD/) (WIP)
+- [Model-Free Prediction & Control with Temporal Difference (TD)](TD/)
 - [Function Approximation](FA/) (WIP)
 - [Deep Q Learning](DeepQ/) (WIP)
 - [Policy Gradient Methods](PolicyGradient/) (WIP)
