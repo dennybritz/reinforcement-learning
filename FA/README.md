@@ -35,5 +35,5 @@
 
 ### Exercises
 
-- Solve Mountain Car Problem using Q-Learning with Linear Function Approximation
+- Solve Mountain Car Problem using Q-Learning with Linear Function Approximation ([Exercise]() [Solution](Q-Learning with Value Function Approximation Solution.ipynb))
 - Add Experience Replay to Q-Learning Implementation
