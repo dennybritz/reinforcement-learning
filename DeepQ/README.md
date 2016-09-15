@@ -19,4 +19,6 @@
 
 ### Exercises
 
-- Implement Deep-Q Learning to solve the Pong Atari Game
+- Deep-Q Learning for the Atari Pong Game
+- Double-Q Learning
+- Prioritized Experience Replay
