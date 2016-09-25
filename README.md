@@ -1,13 +1,13 @@
 ### Overview and Structure
 
-The goal of this repository is to provide code, exercises and solutions of popular Reinforcement Learning algorithms. These are meant to serve as a learning tool to complement the theoretical materials from
+This repository provides code, exercises and solutions for popular Reinforcement Learning algorithms. These are meant to serve as a learning tool to complement the theoretical materials from
 
 - [Reinforcement Learning: An Introduction (2nd Edition)](https://www.dropbox.com/s/d6fyn4a5ag3atzk/bookdraft2016aug.pdf?dl=0)
 - [David Silver's Reinforcement Learning Course](http://www0.cs.ucl.ac.uk/staff/d.silver/web/Teaching.html)
 
-Each folder in this repository corresponds to one or more chapters of the above textbook and/or course. In addition to exercises and solution each folder also contains a list of learning goals, a brief concept summary, and links to the relevant readings.
+Each folder in corresponds to one or more chapters of the above textbook and/or course. In addition to exercises and solution each folder also contains a list of learning goals, a brief concept summary, and links to the relevant readings.
 
-All code is written in Python 3 and the RL environments are taken from [OpenAI Gym](https://gym.openai.com/). Advanced techniques use [Tensorflow](tensorflow.org/) for neural network implementations.
+All code is written in Python 3 and use RL environments from [OpenAI Gym](https://gym.openai.com/). Advanced techniques use [Tensorflow](tensorflow.org/) for neural network implementations.
 
 
 ### Table of Contents
@@ -17,8 +17,8 @@ All code is written in Python 3 and the RL environments are taken from [OpenAI G
 - [Model-Based RL: Policy and Value Iteration using Dynamic Programming](DP/)
 - [Model-Free Prediction & Control with Monte Carlo (MC)](MC/)
 - [Model-Free Prediction & Control with Temporal Difference (TD)](TD/)
-- [Function Approximation](FA/) (WIP)
-- [Deep Q Learning](DeepQ/) (WIP)
+- [Function Approximation](FA/)
+- [Deep Q Learning](DQN/) (WIP)
 - [Policy Gradient Methods](PolicyGradient/) (WIP)
 - Learning and Planning (WIP)
 - Exploration and Exploitation (WIP)
@@ -33,8 +33,8 @@ Textbooks:
 Classes:
 
 - [David Silver's Reinforcement Learning Course (UCL, 2015)](http://www0.cs.ucl.ac.uk/staff/d.silver/web/Teaching.html)
-- [CS 8803 - Reinforcement Learning (Georgia Tech)](https://www.udacity.com/course/reinforcement-learning--ud600)
 - [CS294 - Deep Reinforcement Learning (Berkeley, Fall 2015)](http://rll.berkeley.edu/deeprlcourse/)
+- [CS 8803 - Reinforcement Learning (Georgia Tech)](https://www.udacity.com/course/reinforcement-learning--ud600)
 
 Talks/Tutorials:
 
@@ -57,3 +57,4 @@ Selected Papers:
 - [Dueling Network Architectures for Deep Reinforcement Learning (2015-11)](http://arxiv.org/abs/1511.06581)
 - [Asynchronous Methods for Deep Reinforcement Learning (2016-02)](http://arxiv.org/abs/1602.01783)
 - [Deep Reinforcement Learning from Self-Play in Imperfect-Information Games (2016-03)](http://arxiv.org/abs/1603.01121)
+- [Mastering the game of Go with deep neural networks and tree search](https://gogameguru.com/i/2016/03/deepmind-mastering-go.pdf)
