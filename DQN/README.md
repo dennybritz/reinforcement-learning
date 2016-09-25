@@ -14,6 +14,7 @@
 
 **Optional:**
 
+- [Using Keras and Deep Q-Network to Play FlappyBird](https://yanpanlau.github.io/2016/07/10/FlappyBird-Keras.html)
 - [Deep Reinforcement Learning with Double Q-learning](http://arxiv.org/abs/1509.06461)
 - [Prioritized Experience Replay](http://arxiv.org/abs/1511.05952)
 
