@@ -147,16 +147,16 @@ def deep_q_learning(sess,
                     env,
                     q_estimator,
                     target_estimator,
-                    num_episodes,
                     experiment_dir,
-                    replay_memory_size=500000,
+                    num_episodes,
+                    replay_memory_size=100000,
                     replay_memory_init_size=50000,
                     update_target_estimator_every=10000,
                     discount_factor=0.99,
                     epsilon_start=1.0,
                     epsilon_end=0.1,
                     epsilon_decay_steps=500000,
-                    batch_size=8):
+                    batch_size=32):
     """
     Q-Learning algorithm for fff-policy TD control using Function Approximation.
     Finds the optimal greedy policy while following an epsilon-greedy policy.
@@ -318,8 +318,8 @@ with tf.Session() as sess:
                                     env,
                                     q_estimator=q_estimator,
                                     target_estimator=target_estimator,
-                                    num_episodes=10000,
-                                    replay_memory_init_size=1000,
+                                    num_episodes=50000,
+                                    replay_memory_init_size=50000,
                                     update_target_estimator_every=10000,
                                     experiment_dir=experiment_dir,
                                     epsilon_start=1.0,
@@ -329,8 +329,3 @@ with tf.Session() as sess:
                                     batch_size=32):
 
         print("\nTotal Steps: {}, Last Episode Reward: {}".format(t, stats.episode_rewards[-1]))
-
-        # Save plots
-        figures = plotting.plot_episode_stats(stats, noshow=True)
-        for fignum, fig in enumerate(figures):
-            fig.savefig(os.path.join(experiment_dir, "fig_{}.png".format(fignum)))
