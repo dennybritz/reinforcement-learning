@@ -245,13 +245,14 @@ def deep_q_learning(sess,
     saver = tf.train.Saver()
 
     global_step_tensor = tf.contrib.framework.get_global_step()
-    total_t = sess.run(global_step_tensor)
 
     # Load a previous checkpoint if we find one
     latest_checkpoint = tf.train.latest_checkpoint(checkpoint_dir)
     if latest_checkpoint:
         print("Loading model checkpoint {}...\n".format(latest_checkpoint))
         saver.restore(tf.get_default_session(), latest_checkpoint)
+
+    total_t = sess.run(global_step_tensor)
 
     # Populate the replay memory with some random experience
     print("Populating replay memory...")
