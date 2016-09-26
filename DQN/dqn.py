@@ -43,25 +43,26 @@ class Estimator():
         """
 
         # Preprocessing graph
-        self.unprocessed = tf.placeholder(shape=[210, 160, 3], dtype=tf.float32)
-        self.processed = tf.image.rgb_to_grayscale(self.unprocessed) / 255.0
+        self.unprocessed = tf.placeholder(shape=[210, 160, 3], dtype=tf.uint8)
+        self.processed = tf.image.rgb_to_grayscale(self.unprocessed)
         self.processed = tf.image.crop_to_bounding_box(self.processed, 34, 0, 160, 160)
-        self.processed = tf.image.resize_images(self.processed, 84, 84)
+        self.processed = tf.image.resize_images(self.processed, 84, 84, method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
         self.processed = tf.squeeze(self.processed)
 
         # Placeholders for our input
         # Our input are 4 RGB frames of shape 160, 160 each
-        self.X_pl = tf.placeholder(shape=[None, 84, 84, 4], dtype=tf.float32, name="X")
+        self.X_pl = tf.placeholder(shape=[None, 84, 84, 4], dtype=tf.uint8, name="X")
         # The TD target value
         self.y_pl = tf.placeholder(shape=[None], dtype=tf.float32, name="y")
         # Integer id of which action was selected
         self.actions_pl = tf.placeholder(shape=[None], dtype=tf.int32, name="actions")
 
+        X = tf.to_float(self.X_pl) / 255.0
         batch_size = tf.shape(self.X_pl)[0]
 
         # Three convolutional layers
         conv1 = tf.contrib.layers.conv2d(
-            self.X_pl, 32, 8, 4, activation_fn=tf.nn.relu)
+            X, 32, 8, 4, activation_fn=tf.nn.relu)
         conv2 = tf.contrib.layers.conv2d(
             conv1, 64, 4, 2, activation_fn=tf.nn.relu)
         conv3 = tf.contrib.layers.conv2d(
@@ -375,7 +376,7 @@ with tf.Session() as sess:
                                     target_estimator=target_estimator,
                                     experiment_dir=experiment_dir,
                                     num_episodes=50000,
-                                    replay_memory_size=1000000,
+                                    replay_memory_size=500000,
                                     replay_memory_init_size=50000,
                                     update_target_estimator_every=10000,
                                     epsilon_start=1.0,
