@@ -139,24 +139,6 @@ class Estimator():
         return loss
 
 
-    def predict(self, s):
-        sess = tf.get_default_session()
-        state = self.preprocess_state(s)
-        feed_dict = { self.X_pl: state }
-        return sess.run(self.predictions, feed_dict)
-
-    def update(self, s, a, y):
-        sess = tf.get_default_session()
-        state = self.preprocess_state(s)
-        feed_dict = { self.X_pl: state, self.y_pl: y, self.actions_pl: a }
-        summaries, global_step, loss = sess.run(
-            [self.summaries, tf.contrib.framework.get_global_step(), self.train_op],
-            feed_dict)
-        if self.summary_writer:
-            self.summary_writer.add_summary(summaries, global_step)
-        return loss
-
-
 def copy_model_parameters(estimator1, estimator2):
     e1_params = [t for t in tf.trainable_variables() if t.name.startswith(estimator1.scope)]
     e1_params = sorted(e1_params, key=lambda v: v.name)
