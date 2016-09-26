@@ -14,8 +14,6 @@ if "../" not in sys.path:
 
 from collections import deque, namedtuple
 from lib import plotting
-from sklearn.linear_model import SGDRegressor
-from sklearn.kernel_approximation import RBFSampler
 
 env = gym.envs.make("Breakout-v0")
 
@@ -23,10 +21,17 @@ env = gym.envs.make("Breakout-v0")
 VALID_ACTIONS = [0, 1, 2, 3]
 
 class Estimator():
+    """Q-Value Estimator neural network.
+
+    This network is used for both the Q-Network and the Target Network.
+    """
+
     def __init__(self, scope="estimator", summaries_dir=None):
         self.scope = scope
+        # Writes Tensorboard summaries to disk
         self.summary_writer = None
         with tf.variable_scope(scope):
+            # Build the graph
             self._build_model()
             if summaries_dir:
                 summary_dir = os.path.join(summaries_dir, "summaries_{}".format(scope))
@@ -35,39 +40,51 @@ class Estimator():
                 self.summary_writer = tf.train.SummaryWriter(summary_dir)
 
     def preprocess_state(self, s):
-        # Crop the Atari image to 160x160 pixels
+        """
+        Crop the Atari image to a square.
+        This isn't striclty necessary, but it's what's done in the paper
+        """
         return s[:, :, 34:-16,:,:]
 
     def _build_model(self):
+        """
+        Builds the Tensorflow graph.
+        """
         # Placeholders for our input
-        self.X_pl = tf.placeholder(shape=[None, 4, 160, 160, 3], dtype=tf.float32)
-        self.y_pl = tf.placeholder(shape=[None], dtype=tf.float32)
-        self.actions_pl = tf.placeholder(shape=[None], dtype=tf.int32)
+        # Our input are 4 RGB frames of shape 160, 160 each
+        self.X_pl = tf.placeholder(shape=[None, 4, 160, 160, 3], dtype=tf.float32, name="X")
+        # The TD target value
+        self.y_pl = tf.placeholder(shape=[None], dtype=tf.float32, name="y")
+        # Integer id of which action was selected
+        self.actions_pl = tf.placeholder(shape=[None], dtype=tf.int32, name="actions")
 
-        batch_size = tf.shape(self.y_pl)[0]
+        batch_size = tf.shape(self.X_pl)[0]
 
-        X_stacked = []
-        for x_t in tf.unpack(self.X_pl, axis=1):
-            X_resized = tf.image.resize_images(x_t, 84, 84)
-            X_grayscale = tf.to_float(tf.image.rgb_to_grayscale(X_resized))
-            X_stacked.append(X_grayscale)
-        X_stacked = tf.squeeze(tf.pack(X_stacked, axis=3), [4])
-        X_stacked.set_shape([None, 84, 84, 4])
+        # Resize inputs and convert to grayscale
+        X_stacked =  tf.reshape(self.X_pl, [-1, 160, 160, 3])
+        X_resized = tf.image.resize_images(X_stacked, 84, 84)
+        self.X_grayscale = tf.to_float(tf.image.rgb_to_grayscale(X_resized)) / 255.0
+        X_stacked = tf.reshape(self.X_grayscale, [batch_size, 4, 84, 84])
+        X_stacked = tf.transpose(X_stacked, [0, 2, 3, 1])
 
+        # Three convolutional layers
         conv1 = tf.contrib.layers.conv2d(
             X_stacked, 32, 8, 4, activation_fn=tf.nn.relu)
         conv2 = tf.contrib.layers.conv2d(
             conv1, 64, 4, 2, activation_fn=tf.nn.relu)
         conv3 = tf.contrib.layers.conv2d(
             conv2, 64, 3, 1, activation_fn=tf.nn.relu)
+
+        # Fully connected layers
         flattened = tf.contrib.layers.flatten(conv3)
         fc1 = tf.contrib.layers.fully_connected(flattened, 512)
         self.predictions = tf.contrib.layers.fully_connected(fc1, len(VALID_ACTIONS))
 
-        # Get only the relevant predictions for the chosen actions
+        # Get the predictions for the chosen actions only
         gather_indices = tf.range(batch_size) * tf.shape(self.predictions)[1] + self.actions_pl
         self.action_predictions = tf.gather(tf.reshape(self.predictions, [-1]), gather_indices)
 
+        # Calcualte the loss
         self.losses = tf.squared_difference(self.y_pl, self.action_predictions)
         self.loss = tf.reduce_mean(self.losses)
 
@@ -77,11 +94,49 @@ class Estimator():
 
         # Summaries for Tensorboard
         self.summaries = tf.merge_summary([
-                tf.scalar_summary("loss", self.loss),
-                tf.histogram_summary("loss_hist", self.losses),
-                tf.histogram_summary("q_values_hist", self.predictions),
-                tf.scalar_summary("max_q_value", tf.reduce_max(self.predictions))
-            ])
+            tf.scalar_summary("loss", self.loss),
+            tf.histogram_summary("loss_hist", self.losses),
+            tf.histogram_summary("q_values_hist", self.predictions),
+            tf.scalar_summary("max_q_value", tf.reduce_max(self.predictions))
+        ])
+
+
+    def predict(self, sess, s):
+        """
+        Predicts action values.
+
+        Args:
+          sess: Tensorflow session
+          s: State input of shape [batch_size, 4, 160, 160, 3]
+
+        Returns:
+          Tensor of shape [batch_size, NUM_VALID_ACTIONS] containing the estimated 
+          action values.
+        """
+        state = self.preprocess_state(s)
+        return sess.run(self.predictions, { self.X_pl: state })
+
+    def update(self, sess, s, a, y):
+        """
+        Updates the estimator towards the given targets.
+
+        Args:
+          sess: Tensorflow session object
+          s: State input of shape [batch_size, 4, 160, 160, 3]
+          a: Chosen actions of shape [batch_size]
+          y: Targets of shape [batch_size]
+
+        Returns:
+          The calculated loss on the batch.
+        """
+        state = self.preprocess_state(s)
+        feed_dict = { self.X_pl: state, self.y_pl: y, self.actions_pl: a }
+        summaries, global_step, _, loss = sess.run(
+            [self.summaries, tf.contrib.framework.get_global_step(), self.train_op, self.loss],
+            feed_dict)
+        if self.summary_writer:
+            self.summary_writer.add_summary(summaries, global_step)
+        return loss
 
 
     def predict(self, s):
