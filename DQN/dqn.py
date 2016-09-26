@@ -37,20 +37,21 @@ class Estimator():
                     os.makedirs(summary_dir)
                 self.summary_writer = tf.train.SummaryWriter(summary_dir)
 
-    def preprocess_state(self, s):
-        """
-        Crop the Atari image to a square.
-        This isn't striclty necessary, but it's what's done in the paper
-        """
-        return s[:, :, 34:-16,:,:]
-
     def _build_model(self):
         """
         Builds the Tensorflow graph.
         """
+
+        # Preprocessing graph
+        self.unprocessed = tf.placeholder(shape=[210, 160, 3], dtype=tf.float32)
+        self.processed = tf.image.rgb_to_grayscale(self.unprocessed) / 255.0
+        self.processed = tf.image.crop_to_bounding_box(self.processed, 34, 0, 160, 160)
+        self.processed = tf.image.resize_images(self.processed, 84, 84)
+        self.processed = tf.squeeze(self.processed)
+
         # Placeholders for our input
         # Our input are 4 RGB frames of shape 160, 160 each
-        self.X_pl = tf.placeholder(shape=[None, 4, 160, 160, 3], dtype=tf.float32, name="X")
+        self.X_pl = tf.placeholder(shape=[None, 84, 84, 4], dtype=tf.float32, name="X")
         # The TD target value
         self.y_pl = tf.placeholder(shape=[None], dtype=tf.float32, name="y")
         # Integer id of which action was selected
@@ -58,16 +59,9 @@ class Estimator():
 
         batch_size = tf.shape(self.X_pl)[0]
 
-        # Resize inputs and convert to grayscale
-        X_stacked =  tf.reshape(self.X_pl, [-1, 160, 160, 3])
-        X_resized = tf.image.resize_images(X_stacked, 84, 84)
-        self.X_grayscale = tf.to_float(tf.image.rgb_to_grayscale(X_resized)) / 255.0
-        X_stacked = tf.reshape(self.X_grayscale, [batch_size, 4, 84, 84])
-        X_stacked = tf.transpose(X_stacked, [0, 2, 3, 1])
-
         # Three convolutional layers
         conv1 = tf.contrib.layers.conv2d(
-            X_stacked, 32, 8, 4, activation_fn=tf.nn.relu)
+            self.X_pl, 32, 8, 4, activation_fn=tf.nn.relu)
         conv2 = tf.contrib.layers.conv2d(
             conv1, 64, 4, 2, activation_fn=tf.nn.relu)
         conv3 = tf.contrib.layers.conv2d(
@@ -111,8 +105,7 @@ class Estimator():
           Tensor of shape [batch_size, NUM_VALID_ACTIONS] containing the estimated 
           action values.
         """
-        state = self.preprocess_state(s)
-        return sess.run(self.predictions, { self.X_pl: state })
+        return sess.run(self.predictions, { self.X_pl: s })
 
     def update(self, sess, s, a, y):
         """
@@ -127,8 +120,7 @@ class Estimator():
         Returns:
           The calculated loss on the batch.
         """
-        state = self.preprocess_state(s)
-        feed_dict = { self.X_pl: state, self.y_pl: y, self.actions_pl: a }
+        feed_dict = { self.X_pl: s, self.y_pl: y, self.actions_pl: a }
         summaries, global_step, _, loss = sess.run(
             [self.summaries, tf.contrib.framework.get_global_step(), self.train_op, self.loss],
             feed_dict)
@@ -257,15 +249,18 @@ def deep_q_learning(sess,
     # Populate the replay memory with some random experience
     print("Populating replay memory...")
     state = env.reset()
-    state = np.array([state] * 4)
+    state = sess.run(q_estimator.processed, { q_estimator.unprocessed: state})
+    state = np.stack([state] * 4, axis=2)
     for i in range(replay_memory_init_size):
         action = np.random.choice(len(VALID_ACTIONS))
         next_state, reward, done, _ = env.step(VALID_ACTIONS[action])
-        next_state = np.append([next_state], state[1:,:,:,:], axis=0)
+        next_state = sess.run(q_estimator.processed, { q_estimator.unprocessed: next_state})
+        next_state = np.append(state[:,:,1:], np.expand_dims(next_state, 2), axis=2)
         replay_memory.append(Transition(state, action, reward, next_state, done))
         if done:
             state = env.reset()
-            state = np.array([state] * 4)
+            state = sess.run(q_estimator.processed, { q_estimator.unprocessed: state})
+            state = np.stack([state] * 4, axis=2)
         else:
             state = next_state
 
@@ -286,7 +281,8 @@ def deep_q_learning(sess,
 
         # Reset the environment and pick the first action
         state = env.reset()
-        state = np.array([state] * 4)
+        state = sess.run(q_estimator.processed, { q_estimator.unprocessed: state})
+        state = np.stack([state] * 4, axis=2)
         loss = None
 
         # One step in the environment
@@ -314,7 +310,8 @@ def deep_q_learning(sess,
             action_probs = policy(sess, state, epsilon)
             action = np.random.choice(np.arange(len(action_probs)), p=action_probs)
             next_state, reward, done, _ = env.step(VALID_ACTIONS[action])
-            next_state = np.append([next_state], state[1:,:,:,:], axis=0)
+            next_state = sess.run(q_estimator.processed, { q_estimator.unprocessed: next_state})
+            next_state = np.append(state[:,:,1:], np.expand_dims(next_state, 2), axis=2)
 
             # Save transition to replay memory
             replay_memory.append(Transition(state, action, reward, next_state, done))
