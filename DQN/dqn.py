@@ -225,7 +225,7 @@ def deep_q_learning(sess,
     Transition = namedtuple("Transition", ["state", "action", "reward", "next_state", "done"])
 
     # The replay memory
-    replay_memory = deque(maxlen=replay_memory_size)
+    replay_memory = list()
 
     # Keeps track of useful statistics
     stats = plotting.EpisodeStats(
@@ -318,6 +318,9 @@ def deep_q_learning(sess,
             # Save transition to replay memory
             replay_memory.append(Transition(state, action, reward, next_state, done))
 
+            if len(replay_memory) > replay_memory_size:
+                replay_memory.popleft()
+
             # Update statistics
             stats.episode_rewards[i_episode] += reward
             stats.episode_lengths[i_episode] = t
@@ -374,7 +377,7 @@ with tf.Session() as sess:
                                     target_estimator=target_estimator,
                                     experiment_dir=experiment_dir,
                                     num_episodes=50000,
-                                    replay_memory_size=500000,
+                                    replay_memory_size=1000000,
                                     replay_memory_init_size=50000,
                                     update_target_estimator_every=10000,
                                     epsilon_start=1.0,
