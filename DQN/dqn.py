@@ -1,6 +1,7 @@
 import gym
 import itertools
 import numpy as np
+import random
 import os
 import sys
 import tensorflow as tf
@@ -158,21 +159,20 @@ def copy_model_parameters(sess, estimator1, estimator2):
     sess.run(update_ops)
 
 
-def make_epsilon_greedy_policy(estimator, epsilon, nA):
+def make_epsilon_greedy_policy(estimator, nA):
     """
     Creates an epsilon-greedy policy based on a given Q-function approximator and epsilon.
 
     Args:
         estimator: An estimator that returns q values for a given state
-        epsilon: The probability to select a random action . float between 0 and 1.
         nA: Number of actions in the environment.
 
     Returns:
-        A function that takes the observation as an argument and returns
+        A function that takes the (sess, observation, epsilon) as an argument and returns
         the probabilities for each action in the form of a numpy array of length nA.
 
     """
-    def policy_fn(sess, observation):
+    def policy_fn(sess, observation, epsilon):
         A = np.ones(nA, dtype=float) * epsilon / nA
         q_values = estimator.predict(sess, np.expand_dims(observation, 0))[0]
         best_action = np.argmax(q_values)
@@ -243,6 +243,10 @@ def deep_q_learning(sess,
         os.makedirs(monitor_path)
 
     saver = tf.train.Saver()
+
+    global_step_tensor = tf.contrib.framework.get_global_step()
+    total_t = sess.run(global_step_tensor)
+
     # Load a previous checkpoint if we find one
     latest_checkpoint = tf.train.latest_checkpoint(checkpoint_dir)
     if latest_checkpoint:
@@ -269,10 +273,15 @@ def deep_q_learning(sess,
     # The epsilon decay schedule
     epsilons = np.linspace(epsilon_start, epsilon_end, epsilon_decay_steps)
 
+    # The policy we're following
+    policy = make_epsilon_greedy_policy(
+        q_estimator,
+        len(VALID_ACTIONS))
+
     for i_episode in range(num_episodes):
 
         # Save the current checkpoint
-        saver.save(tf.get_default_session(), checkpoint_path)
+        saver.save(sess, checkpoint_path)
 
         # Reset the environment and pick the first action
         state = env.reset()
@@ -281,16 +290,9 @@ def deep_q_learning(sess,
 
         # One step in the environment
         for t in itertools.count():
-            total_t = sess.run(tf.contrib.framework.get_global_step())
 
             # Epsilon for this time step
-            epsilon = epsilons[min(total_t, epsilon_decay_steps-1)]
-
-            # The policy we're following
-            policy = make_epsilon_greedy_policy(
-                q_estimator,
-                epsilon,
-                len(VALID_ACTIONS))
+            epsilon = epsilons[min(total_t, epsilon_decay_steps - 1)]
 
             # Add epsilon to Tensorboard
             episode_summary = tf.Summary()
@@ -308,7 +310,7 @@ def deep_q_learning(sess,
             sys.stdout.flush()
 
             # Take a step
-            action_probs = policy(sess, state)
+            action_probs = policy(sess, state, epsilon)
             action = np.random.choice(np.arange(len(action_probs)), p=action_probs)
             next_state, reward, done, _ = env.step(VALID_ACTIONS[action])
             next_state = np.append([next_state], state[1:,:,:,:], axis=0)
@@ -321,9 +323,7 @@ def deep_q_learning(sess,
             stats.episode_lengths[i_episode] = t
 
             # Sample a minibatch from the replay memory
-            sample_len = min(batch_size, len(replay_memory))
-            sample_idx = np.random.choice(len(replay_memory), sample_len, replace=False)
-            samples = [replay_memory[_] for _ in sample_idx]
+            samples = random.sample(replay_memory, batch_size)
             states_batch, action_batch, reward_batch, next_states_batch, done_batch = map(np.array, zip(*samples))
 
             # Calculate q values and targets
@@ -331,13 +331,14 @@ def deep_q_learning(sess,
             targets_batch = reward_batch + np.invert(done_batch).astype(np.float32) * discount_factor * np.amax(q_values_next, axis=1)
 
             # Perform gradient descent update
-            states_batch = np.array(states_batch)
             loss = q_estimator.update(sess, states_batch, action_batch, targets_batch)
 
             if done:
                 break
 
             state = next_state
+
+            total_t += 1
 
         # Add summaries to tensorboard
         episode_summary = tf.Summary()
@@ -350,7 +351,6 @@ def deep_q_learning(sess,
             episode_lengths=stats.episode_lengths[:i_episode+1],
             episode_rewards=stats.episode_rewards[:i_episode+1])
 
-    env.monitor.close()
     return stats
 
 
@@ -374,7 +374,7 @@ with tf.Session() as sess:
                                     target_estimator=target_estimator,
                                     experiment_dir=experiment_dir,
                                     num_episodes=50000,
-                                    replay_memory_size=1000000,
+                                    replay_memory_size=500000,
                                     replay_memory_init_size=50000,
                                     update_target_estimator_every=10000,
                                     epsilon_start=1.0,

@@ -39,6 +39,6 @@
 ### Exercises
 
 - OpenAI Gym Atari Environment Playground
-- Deep-Q Learning for Atari Games ([Exercise](), [Solution]())
+- Deep-Q Learning for Atari Games ([Exercise](Deep Q Learning.ipynb), [Solution](Deep Q Learning Solution.ipynb))
 - Double-Q Learning (WIP)
 - Prioritized Experience Replay (WIP)
