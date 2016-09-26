@@ -318,7 +318,7 @@ def deep_q_learning(sess,
             replay_memory.append(Transition(state, action, reward, next_state, done))
 
             if len(replay_memory) > replay_memory_size:
-                replay_memory.popleft()
+                replay_memory.pop(0)
 
             # Update statistics
             stats.episode_rewards[i_episode] += reward
