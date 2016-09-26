@@ -411,4 +411,5 @@ with tf.Session() as sess:
                                     epsilon_decay_steps=500000,
                                     discount_factor=0.99,
                                     batch_size=32):
+
         print("\nEpisode Reward: {}".format(stats.episode_rewards[-1]))
