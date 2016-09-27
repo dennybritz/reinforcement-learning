@@ -3,23 +3,29 @@
 ### Learning Goals
 
 - Understand the Reinforcement Learning problem and how it differs from Supervised Learning
-- Understand what MDPs (Markov Decision Processes) are and how to interpret transition diagrams
-- Understand Value Functions, Action-Value Functions, and Policy Functions
-- Understand the Bellman Equations and Bellman Optimiality Equations for value functions and action-value functions
+
+
+### Summary
+
+- Reinforcement Learning (RL)is concered with goal-directed learnign and decison-making.
+- In RL an agent learns from experiences it gains by interacting with the environment. In Supervised Learning we cannot affect the environment.
+- In RL rewards are often delayed in time and the agent tries to maximize a long-term goal. For example, one may need to make seemingly suboptimal moves to reach a winning position in a game.
+- An agents interacts with the environment via states, actions and rewards.
+
 
 ### Lectures & Readings
 
 **Required:**
 
+- [Reinforcement Learning: An Introduction](https://www.dropbox.com/s/d6fyn4a5ag3atzk/bookdraft2016aug.pdf) - Chapter 1: The Reinforcement Learning Problem
 - David Silver's RL Course Lecture 1 - Introduction to Reinforcement Learning ([video](https://www.youtube.com/watch?v=2pWv7GOvuf0), [slides](http://www0.cs.ucl.ac.uk/staff/d.silver/web/Teaching_files/intro_RL.pdf))
-- David Silver's RL Course Lecture 2 - Markov Decision Processes ([video](https://www.youtube.com/watch?v=lfHX2hHRMVQ), [slides](http://www0.cs.ucl.ac.uk/staff/d.silver/web/Teaching_files/MDP.pdf))
+
 
 **Optional:**
 
-- [Reinforcement Learning: An Introduction](https://www.dropbox.com/s/d6fyn4a5ag3atzk/bookdraft2016aug.pdf) - Chapter 1: The Reinforcement Learning Problem
-- [Reinforcement Learning: An Introduction](https://www.dropbox.com/s/d6fyn4a5ag3atzk/bookdraft2016aug.pdf) - Chapter 3: Finite Markov Decision Processes
+N/A
 
 
 ### Exercises
 
-TODO
+Introduction, no exercises.
