@@ -20,7 +20,7 @@
 - TD Target for SARSA: `R[t+1] + discount_factor * Q[next_state][next_action]`
 - Q-Learning: Off-policy TD Control
 - TD Target for Q-Learning: `R[t+1] + discount_factor * max(Q[next_state])`
-- Q-Learning has a positive bias becuase it uses the maximum of estimated Q values to estimate the maximum action value, all from the same experience. Double Q-Learning gets around this by splitting the experience and using different Q functions for maximization and estimation.
+- Q-Learning has a positive bias because it uses the maximum of estimated Q values to estimate the maximum action value, all from the same experience. Double Q-Learning gets around this by splitting the experience and using different Q functions for maximization and estimation.
 - N-Step methods unify MC and TD approaches. They making updates based on n-steps instead of a single step (TD-0) or a full episode (MC).
 
 

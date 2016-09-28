@@ -350,9 +350,12 @@ def deep_q_learning(sess,
             samples = random.sample(replay_memory, batch_size)
             states_batch, action_batch, reward_batch, next_states_batch, done_batch = map(np.array, zip(*samples))
 
-            # Calculate q values and targets
-            q_values_next = target_estimator.predict(sess, next_states_batch)
-            targets_batch = reward_batch + np.invert(done_batch).astype(np.float32) * discount_factor * np.amax(q_values_next, axis=1)
+            # Calculate q values and targets (Double DQN)
+            q_values_next = q_estimator.predict(sess, next_states_batch)
+            best_actions = np.argmax(q_values_next, axis=1)
+            q_values_next_target = target_estimator.predict(sess, next_states_batch)
+            targets_batch = reward_batch + np.invert(done_batch).astype(np.float32) * \
+                discount_factor * q_values_next_target[np.arange(batch_size), best_actions]
 
             # Perform gradient descent update
             states_batch = np.array(states_batch)
