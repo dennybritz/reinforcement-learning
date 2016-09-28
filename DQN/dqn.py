@@ -238,7 +238,7 @@ def deep_q_learning(sess,
     Transition = namedtuple("Transition", ["state", "action", "reward", "next_state", "done"])
 
     # The replay memory
-    replay_memory = deque(maxlen=replay_memory_size)
+    replay_memory = []
 
     # Keeps track of useful statistics
     stats = plotting.EpisodeStats(
