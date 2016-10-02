@@ -48,9 +48,15 @@
 
 ### Exercises
 
-- Implement REINFORCE with Baseline (Exercise, [Solution](CliffWalk REINFORCE with Baseline Solution.ipynb))
-- Implement Actor Critic with Baseline (Exercise, [Solution](CliffWalk Actor Critic Solution.ipynb))
-- Implement Actor Critic with Baseline for Continuous Action Space (Exercise, [Solution](Continuous MountainCar Actor Critic Solution.ipynb))
-- Implement Deterministic Policy Gradients for Continuous Action Spaces (WIP)
-- Implement Deep Deterministic Policy Gradients (WIP)
-- Implement Asynchronous Advantage Actor Critic (A3C) (WIP)
+- REINFORCE with Baseline
+  - Exercise
+  - [Solution](CliffWalk REINFORCE with Baseline Solution.ipynb)
+- Actor Critic with Baseline
+  - Exercise
+  - [Solution](CliffWalk Actor Critic Solution.ipynb)
+- Actor Critic with Baseline for Continuous Action Spaces
+  - Exercise
+  - [Solution](Continuous MountainCar Actor Critic Solution.ipynb)
+- Deterministic Policy Gradients for Continuous Action Spaces (WIP)
+- Deep Deterministic Policy Gradients (WIP)
+- Asynchronous Advantage Actor Critic (A3C) (WIP)
