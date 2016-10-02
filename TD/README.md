@@ -40,7 +40,11 @@
 
 ### Exercises
 
-1. [Windy Gridworld Playground](Windy Gridworld Playground.ipynb)
-2. Implement SARSA in Python ([Exercise](SARSA.ipynb), [Solution](SARSA Solution.ipynb))
-3. [Cliff Environment Playground](Cliff Environment Playground.ipynb)
-4. Implement Q-Learning in Python ([Exercise](Q-Learning.ipynb), [Solution](Q-Learning Solution.ipynb))
+- [Windy Gridworld Playground](Windy Gridworld Playground.ipynb)
+- Implement SARSA
+  - [Exercise](SARSA.ipynb)
+  - [Solution](SARSA Solution.ipynb)
+- [Cliff Environment Playground](Cliff Environment Playground.ipynb)
+- Implement Q-Learning in Python
+  - [Exercise](Q-Learning.ipynb)
+  - [Solution](Q-Learning Solution.ipynb)
