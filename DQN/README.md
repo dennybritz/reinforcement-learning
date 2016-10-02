@@ -4,7 +4,7 @@
 
 - Understand the Deep Q-Learning (DQN) algorithm
 - Understand why Experience Replay and a Target Network are necessary to make Deep Q-Learning work in practice
-- (Optional) Understand Double Q-Learning
+- (Optional) Understand Double Deep Q-Learning
 - (Optional) Understand Prioritized Experience Replay
 
 
@@ -39,7 +39,11 @@
 
 ### Exercises
 
-- OpenAI Gym Atari Environment Playground
-- Deep-Q Learning for Atari Games ([Exercise](Deep Q Learning.ipynb), [Solution](Deep Q Learning Solution.ipynb))
-- Double-Q Learning (This is a minimal change to Q-Learning so use the same exercise as above, [Solution](Double DQN Solution.ipynb))
+- [OpenAI Gym Atari Environment Playground](Breakout Playground.ipynb)
+- Deep-Q Learning for Atari Games
+  - [Exercise](Deep Q Learning.ipynb)
+  - [Solution](Deep Q Learning Solution.ipynb)
+- Double-Q Learning
+  - This is a minimal change to Q-Learning so use the same exercise as above
+  - [Solution](Double DQN Solution.ipynb)
 - Prioritized Experience Replay (WIP)
