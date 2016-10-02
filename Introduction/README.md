@@ -7,7 +7,7 @@
 
 ### Summary
 
-- Reinforcement Learning (RL)is concered with goal-directed learnign and decison-making.
+- Reinforcement Learning (RL)is concered with goal-directed learning and decison-making.
 - In RL an agent learns from experiences it gains by interacting with the environment. In Supervised Learning we cannot affect the environment.
 - In RL rewards are often delayed in time and the agent tries to maximize a long-term goal. For example, one may need to make seemingly suboptimal moves to reach a winning position in a game.
 - An agents interacts with the environment via states, actions and rewards.
