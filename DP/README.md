@@ -33,6 +33,14 @@
 
 ### Exercises
 
-- [Implement Policy Evaluation in Python (Gridworld)](Policy Evaluation.ipynb)
-- [Implement Policy Iteration in Python (Gridworld)](Policy Iteration.ipynb)
-- [Implement Value Iteration in Python (Gridworld)](Value Iteration.ipynb)
+- Implement Policy Evaluation in Python (Gridworld)
+  - [Exercise](Policy Evaluation.ipynb)
+  - [Solution](Policy Evaluation Solution.ipynb)
+
+- Implement Policy Iteration in Python (Gridworld)
+  - [Exercise](Policy Iteration.ipynb)
+  - [Solution](Policy Iteration Solution.ipynb)
+
+- Implement Value Iteration in Python (Gridworld)
+  - [Exercise](Value Iteration.ipynb)
+  - [Solution](Value Iteration Solution.ipynb)
