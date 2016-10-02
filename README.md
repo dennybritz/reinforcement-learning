@@ -24,6 +24,27 @@ All code is written in Python 3 and use RL environments from [OpenAI Gym](https:
 - Exploration and Exploitation (WIP)
 
 
+### List of Implemented Algorithms
+
+- [Dynamic Programming Policy Evaluation](DP/Policy Evaluation Solution.ipynb)
+- [Dynamic Programming Policy Iteration](DP/Policy Iteration Solution.ipynb)
+- [Dynamic Programming Value Iteration](DP/Value Iteration Solution.ipynb)
+- [Monte Carlo Prediction](MC/MC Prediction (Solution).ipynb)
+- [Monte Carlo Control with Epsilon-Greedy Policies](MC/MC Control with Epsilon-Greedy Policies (Solution).ipynb)
+- [Monte Carlo Off-Policy Control with Importance Sampling](MC/Off-Policy MC Control with Weighted Importance Sampling (Solution).ipynb)
+- [SARSA (On Policy TD Learning)](TD/SARSA Solution.ipynb)
+- [Q-Learning (Off Policy TD Learning)](TD/Q-Learning Solution.ipynb)
+- [Deep Q-Learning for Atari Games](DQN/Deep Q Learning Solution.ipynb))
+- [Double Deep-Q Learning for Atari Games](DQN/Double DQN Solution.ipynb))
+- Deep Q-Learning with Prioritized Experience Replay (WIP)
+- [Policy Gradient: REINFORCE with Baseline](PolicyGradient/CliffWalk REINFORCE with Baseline Solution.ipynb))
+- [Policy Gradient: Actor Critic with Baseline](PolicyGradient/CliffWalk Actor Critic Solution.ipynb))
+- [Policy Gradient: Actor Critic with Baseline for Continuous Action Spaces](PolicyGradient/Continuous MountainCar Actor Critic Solution.ipynb)
+- Deterministic Policy Gradients for Continuous Action Spaces (WIP)
+- Deep Deterministic Policy Gradients (DDPG) (WIP)
+- Asynchronous Advantage Actor Critic (A3C) (WIP)
+
+
 ### Resources
 
 Textbooks:

@@ -53,4 +53,4 @@
 - Implement Actor Critic with Baseline for Continuous Action Space (Exercise, [Solution](Continuous MountainCar Actor Critic Solution.ipynb))
 - Implement Deterministic Policy Gradients for Continuous Action Spaces (WIP)
 - Implement Deep Deterministic Policy Gradients (WIP)
-- Implement synchronous Advantage Actor Critic (A3C) (WIP)
+- Implement Asynchronous Advantage Actor Critic (A3C) (WIP)
