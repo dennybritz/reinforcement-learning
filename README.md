@@ -34,6 +34,7 @@ All code is written in Python 3 and use RL environments from [OpenAI Gym](https:
 - [Monte Carlo Off-Policy Control with Importance Sampling](MC/Off-Policy MC Control with Weighted Importance Sampling Solution.ipynb)
 - [SARSA (On Policy TD Learning)](TD/SARSA Solution.ipynb)
 - [Q-Learning (Off Policy TD Learning)](TD/Q-Learning Solution.ipynb)
+- [Q-Learning with Linear Function Approximation](FA/Q-Learning with Value Function Approximation Solution.ipynb)
 - [Deep Q-Learning for Atari Games](DQN/Deep Q Learning Solution.ipynb)
 - [Double Deep-Q Learning for Atari Games](DQN/Double DQN Solution.ipynb)
 - Deep Q-Learning with Prioritized Experience Replay (WIP)
