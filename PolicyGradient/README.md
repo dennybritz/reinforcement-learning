@@ -14,7 +14,7 @@
 ### Summary
 
 - Idea: Instead of parameterizing the value function and doing greedy policy improvement we parameterize the policy and do gradient descent into a direction that improves it.
-- Sometimes the policy is easier to approximate than the value function. Also, we need a parameterized policy to deal with continuous action spaces and environment where we need to act stochastically.
+- Sometimes the policy is easier to approximate than the value function. Also, we need a parameterized policy to deal with continuous action spaces and environments where we need to act stochastically.
 - Policy Score Function `J(theta)`: Intuitively, it measures how good our policy is. For example, we can use the average value or average reward under a policy as our objective.
 - Common choices for the policy function: Softmax for discrete actions, Gaussian parameters for continuous actions.
 - Policy Gradient Theorem: `grad(J(theta)) = Ex[grad(log(pi(s, a))) * Q(s, a)]`. Basically, we move our policy into a direction of more reward.
