@@ -1,6 +1,30 @@
 import numpy as np
 import tensorflow as tf
 
+def build_shared_network(X, add_summaries=False):
+    # Three convolutional layers
+    conv1 = tf.contrib.layers.conv2d(
+        X, 32, 8, 4, activation_fn=tf.nn.relu, scope="conv1")
+    conv2 = tf.contrib.layers.conv2d(
+        conv1, 64, 4, 2, activation_fn=tf.nn.relu, scope="conv2")
+    conv3 = tf.contrib.layers.conv2d(
+        conv2, 64, 3, 1, activation_fn=tf.nn.relu, scope="conv3")
+
+    # Fully connected layer
+    flattened = tf.contrib.layers.flatten(conv3)
+    fc1 = tf.contrib.layers.fully_connected(
+        inputs=flattened,
+        num_outputs=256,
+        scope="fc1")
+
+    if add_summaries:
+        tf.contrib.layers.summarize_activation(conv1)
+        tf.contrib.layers.summarize_activation(conv2)
+        tf.contrib.layers.summarize_activation(conv3)
+        tf.contrib.layers.summarize_activation(fc1)
+
+    return fc1
+
 class PolicyEstimator():
     """
     Policy Function approximator.
@@ -22,21 +46,11 @@ class PolicyEstimator():
 
         # Graph shared with Value Net
         with tf.variable_scope("shared", reuse=reuse):
-            # Three convolutional layers
-            conv1 = tf.contrib.layers.conv2d(
-                X, 32, 8, 4, activation_fn=tf.nn.relu)
-            conv2 = tf.contrib.layers.conv2d(
-                conv1, 64, 4, 2, activation_fn=tf.nn.relu)
-            conv3 = tf.contrib.layers.conv2d(
-                conv2, 64, 3, 1, activation_fn=tf.nn.relu)
+            fc1 = build_shared_network(X, add_summaries=(not reuse))
 
-            flattened = tf.contrib.layers.flatten(conv3)
-            fc1 = tf.contrib.layers.fully_connected(
-                inputs=flattened,
-                num_outputs=256)
 
         with tf.variable_scope("policy_net"):
-            self.logits = tf.contrib.layers.fully_connected(fc1, num_outputs)
+            self.logits = tf.contrib.layers.fully_connected(fc1, num_outputs, activation_fn=None)
             self.probs = tf.nn.softmax(self.logits)
 
             self.predictions = {
@@ -57,8 +71,11 @@ class PolicyEstimator():
             self.losses = - (tf.log(self.picked_action_probs) * self.targets + 0.01 * self.cross_entropy)
             self.loss = tf.reduce_sum(self.losses)
 
-            tf.scalar_summary("policy_net_loss", self.loss)
-            tf.histogram_summary("policy_net_cross_entropy", self.cross_entropy)
+            tf.scalar_summary("policy_net/loss", self.loss)
+            tf.scalar_summary("policy_net/advantage_mean", tf.reduce_mean(self.targets))
+            tf.scalar_summary("policy_net/entropy_mean", tf.reduce_mean(self.cross_entropy))
+            tf.histogram_summary("policy_net/cross_entropy", self.cross_entropy)
+            tf.histogram_summary("policy_net/actions", self.actions)
 
             # Optimizer Parameters from original paper
             self.optimizer = tf.train.RMSPropOptimizer(0.00025, 0.99, 0.0, 1e-6)
@@ -72,7 +89,7 @@ class PolicyEstimator():
                 summaries=tf.contrib.layers.optimizers.OPTIMIZER_SUMMARIES)
 
             summary_ops = tf.get_collection(tf.GraphKeys.SUMMARIES)
-            self.summaries = tf.merge_summary([s for s in summary_ops if "policy_net" in s.name])
+            self.summaries = tf.merge_summary([s for s in summary_ops if "policy_net" in s.name or "shared" in s.name])
 
 
 
@@ -93,23 +110,13 @@ class ValueEstimator():
 
         # Graph shared with Value Net
         with tf.variable_scope("shared", reuse=reuse):
-            # Three convolutional layers
-            conv1 = tf.contrib.layers.conv2d(
-                X, 32, 8, 4, activation_fn=tf.nn.relu)
-            conv2 = tf.contrib.layers.conv2d(
-                conv1, 64, 4, 2, activation_fn=tf.nn.relu)
-            conv3 = tf.contrib.layers.conv2d(
-                conv2, 64, 3, 1, activation_fn=tf.nn.relu)
-
-            flattened = tf.contrib.layers.flatten(conv3)
-            fc1 = tf.contrib.layers.fully_connected(
-                inputs=flattened,
-                num_outputs=256)
+            fc1 = build_shared_network(X, add_summaries=(not reuse))
 
         with tf.variable_scope("value_net"):
             self.logits = tf.contrib.layers.fully_connected(
                 inputs=fc1,
-                num_outputs=1)
+                num_outputs=1,
+                activation_fn=None)
             self.logits = tf.squeeze(self.logits, squeeze_dims=[1])
 
             self.losses = tf.squared_difference(self.logits, self.targets)
@@ -145,4 +152,4 @@ class ValueEstimator():
             tf.histogram_summary("value_net/values", self.logits)
 
             summary_ops = tf.get_collection(tf.GraphKeys.SUMMARIES)
-            self.summaries = tf.merge_summary([s for s in summary_ops if "value_net" in s.name])
+            self.summaries = tf.merge_summary([s for s in summary_ops if "value_net" in s.name or "shared" in s.name])

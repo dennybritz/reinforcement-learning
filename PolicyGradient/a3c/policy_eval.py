@@ -67,8 +67,8 @@ class PolicyEval(object):
 
           # Add summary
           episode_summary = tf.Summary()
-          episode_summary.value.add(simple_value=total_reward, tag="total_reward")
-          episode_summary.value.add(simple_value=episode_length, tag="episode_length")
+          episode_summary.value.add(simple_value=total_reward, tag="eval/total_reward")
+          episode_summary.value.add(simple_value=episode_length, tag="eval/episode_length")
           self.summary_writer.add_summary(episode_summary, global_step)
           self.summary_writer.flush()
 
