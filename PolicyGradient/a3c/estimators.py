@@ -51,8 +51,8 @@ class PolicyEstimator():
             gather_indices = tf.range(batch_size) * tf.shape(self.probs)[1] + self.actions
             self.picked_action_probs = tf.gather(tf.reshape(self.probs, [-1]), gather_indices)
 
-            self.losses = - (tf.log(self.picked_action_probs) * self.targets + 0.01 * self.cross_entropy)
-            self.loss = tf.reduce_mean(self.losses)
+            self.losses = - (tf.log(self.picked_action_probs) * self.targets + 0.1 * self.cross_entropy)
+            self.loss = tf.reduce_sum(self.losses)
 
             tf.scalar_summary("policy_net_loss", self.loss)
             tf.histogram_summary("policy_net_cross_entropy", self.cross_entropy)
@@ -105,7 +105,7 @@ class ValueEstimator():
             self.logits = tf.squeeze(self.logits, squeeze_dims=[1])
 
             self.losses = tf.squared_difference(self.logits, self.targets)
-            self.loss = tf.reduce_mean(self.losses)
+            self.loss = tf.reduce_sum(self.losses)
 
             self.predictions = {
                 "logits": self.logits
