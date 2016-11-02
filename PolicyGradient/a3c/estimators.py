@@ -74,12 +74,12 @@ class PolicyEstimator():
             tf.histogram_summary("policy_net/actions", self.actions)
 
             # Optimizer Parameters from original paper
-            self.optimizer = tf.train.RMSPropOptimizer(0.00025, 0.99, 0.0, 1e-6)
-            # self.optimizer = tf.train.AdamOptimizer(1e-4)
+            # self.optimizer = tf.train.RMSPropOptimizer(0.00025, 0.99, 0.0, 1e-6)
+            self.optimizer = tf.train.AdamOptimizer(1e-4)
             self.train_op = tf.contrib.layers.optimize_loss(
                 loss=self.loss,
                 global_step=tf.contrib.framework.get_global_step(),
-                learning_rate=0.00025,
+                learning_rate=1e-4,
                 optimizer=self.optimizer,
                 # clip_gradients=5.0,
                 summaries=tf.contrib.layers.optimizers.OPTIMIZER_SUMMARIES)
@@ -126,12 +126,12 @@ class ValueEstimator():
                 return
 
             # Optimizer Parameters from original paper
-            self.optimizer = tf.train.RMSPropOptimizer(0.00025, 0.99, 0.0, 1e-6)
-            # self.optimizer = tf.train.AdamOptimizer(1e-4)
+            # self.optimizer = tf.train.RMSPropOptimizer(0.00025, 0.99, 0.0, 1e-6)
+            self.optimizer = tf.train.AdamOptimizer(1e-4)
             self.train_op = tf.contrib.layers.optimize_loss(
                 loss=self.loss,
                 global_step=tf.contrib.framework.get_global_step(),
-                learning_rate=0.00025,
+                learning_rate=1e-4,
                 optimizer=self.optimizer,
                 # clip_gradients=5.0,
                 summaries=tf.contrib.layers.optimizers.OPTIMIZER_SUMMARIES)
