@@ -110,7 +110,7 @@ class ValueEstimator():
             self.logits = tf.contrib.layers.fully_connected(
                 inputs=fc1,
                 num_outputs=1)
-            self.logits = tf.squeeze(self.logits)
+            self.logits = tf.squeeze(self.logits, squeeze_dims=[1])
 
             self.losses = tf.squared_difference(self.logits, self.targets)
             self.loss = tf.reduce_sum(self.losses)
