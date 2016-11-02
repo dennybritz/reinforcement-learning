@@ -30,9 +30,12 @@ class PolicyEstimator():
             conv3 = tf.contrib.layers.conv2d(
                 conv2, 64, 3, 1, activation_fn=tf.nn.relu)
 
-        with tf.variable_scope("policy_net"):
             flattened = tf.contrib.layers.flatten(conv3)
-            fc1 = tf.contrib.layers.fully_connected(flattened, 512)
+            fc1 = tf.contrib.layers.fully_connected(
+                inputs=flattened,
+                num_outputs=256)
+
+        with tf.variable_scope("policy_net"):
             self.logits = tf.contrib.layers.fully_connected(fc1, num_outputs)
             self.probs = tf.nn.softmax(self.logits)
 
@@ -65,8 +68,7 @@ class PolicyEstimator():
                 global_step=tf.contrib.framework.get_global_step(),
                 learning_rate=0.00025,
                 optimizer=self.optimizer,
-                clip_gradients=5.0,
-                name="policy_net",
+                # clip_gradients=5.0,
                 summaries=tf.contrib.layers.optimizers.OPTIMIZER_SUMMARIES)
 
             summary_ops = tf.get_collection(tf.GraphKeys.SUMMARIES)
@@ -99,14 +101,15 @@ class ValueEstimator():
             conv3 = tf.contrib.layers.conv2d(
                 conv2, 64, 3, 1, activation_fn=tf.nn.relu)
 
-        with tf.variable_scope("value_net"):
             flattened = tf.contrib.layers.flatten(conv3)
             fc1 = tf.contrib.layers.fully_connected(
                 inputs=flattened,
-                num_outputs=512,
-                weights_initializer=tf.zeros_initializer,
-                biases_initializer=tf.zeros_initializer)
-            self.logits = tf.contrib.layers.fully_connected(fc1, 1)
+                num_outputs=256)
+
+        with tf.variable_scope("value_net"):
+            self.logits = tf.contrib.layers.fully_connected(
+                inputs=fc1,
+                num_outputs=1)
             self.logits = tf.squeeze(self.logits, squeeze_dims=[1])
 
             self.losses = tf.squared_difference(self.logits, self.targets)
@@ -127,18 +130,17 @@ class ValueEstimator():
                 global_step=tf.contrib.framework.get_global_step(),
                 learning_rate=0.00025,
                 optimizer=self.optimizer,
-                clip_gradients=5.0,
-                name="value_net",
+                # clip_gradients=5.0,
                 summaries=tf.contrib.layers.optimizers.OPTIMIZER_SUMMARIES)
 
             # Summaries
             max_value = tf.reduce_max(self.logits)
-            tf.scalar_summary("value_net_loss", self.loss)
-            tf.scalar_summary("max_value", max_value)
-            tf.histogram_summary("reward_targets", self.targets)
-            tf.scalar_summary("max_reward", tf.reduce_max(self.targets))
-            tf.scalar_summary("min_reward", tf.reduce_min(self.targets))
-            tf.scalar_summary("mean_reward", tf.reduce_mean(self.targets))
+            tf.scalar_summary("value_net/loss", self.loss)
+            tf.scalar_summary("value_net/max_value", max_value)
+            tf.histogram_summary("value_net/reward_targets", self.targets)
+            tf.scalar_summary("value_net/reward_max", tf.reduce_max(self.targets))
+            tf.scalar_summary("value_net/reward_min", tf.reduce_min(self.targets))
+            tf.scalar_summary("value_net/reward_mean", tf.reduce_mean(self.targets))
 
             summary_ops = tf.get_collection(tf.GraphKeys.SUMMARIES)
             self.summaries = tf.merge_summary([s for s in summary_ops if "value_net" in s.name])
