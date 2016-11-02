@@ -110,7 +110,7 @@ class ValueEstimator():
             self.logits = tf.contrib.layers.fully_connected(
                 inputs=fc1,
                 num_outputs=1)
-            self.logits = tf.squeeze(self.logits, squeeze_dims=[1])
+            self.logits = tf.squeeze(self.logits)
 
             self.losses = tf.squared_difference(self.logits, self.targets)
             self.loss = tf.reduce_sum(self.losses)
@@ -134,13 +134,15 @@ class ValueEstimator():
                 summaries=tf.contrib.layers.optimizers.OPTIMIZER_SUMMARIES)
 
             # Summaries
-            max_value = tf.reduce_max(self.logits)
             tf.scalar_summary("value_net/loss", self.loss)
-            tf.scalar_summary("value_net/max_value", max_value)
-            tf.histogram_summary("value_net/reward_targets", self.targets)
+            tf.scalar_summary("value_net/max_value", tf.reduce_max(self.logits))
+            tf.scalar_summary("value_net/min_value", tf.reduce_min(self.logits))
+            tf.scalar_summary("value_net/mean_value", tf.reduce_mean(self.logits))
             tf.scalar_summary("value_net/reward_max", tf.reduce_max(self.targets))
             tf.scalar_summary("value_net/reward_min", tf.reduce_min(self.targets))
             tf.scalar_summary("value_net/reward_mean", tf.reduce_mean(self.targets))
+            tf.histogram_summary("value_net/reward_targets", self.targets)
+            tf.histogram_summary("value_net/values", self.logits)
 
             summary_ops = tf.get_collection(tf.GraphKeys.SUMMARIES)
             self.summaries = tf.merge_summary([s for s in summary_ops if "value_net" in s.name])
