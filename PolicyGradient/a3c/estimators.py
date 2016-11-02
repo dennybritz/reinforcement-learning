@@ -58,8 +58,8 @@ class PolicyEstimator():
             tf.histogram_summary("policy_net_cross_entropy", self.cross_entropy)
 
             # Optimizer Parameters from original paper
-            # self.optimizer = tf.train.RMSPropOptimizer(0.00025, 0.99, 0.0, 1e-6)
-            self.optimizer = tf.train.AdamOptimizer(1e-4)
+            self.optimizer = tf.train.RMSPropOptimizer(0.00025, 0.99, 0.0, 1e-6)
+            # self.optimizer = tf.train.AdamOptimizer(1e-4)
             self.train_op = tf.contrib.layers.optimize_loss(
                 loss=self.loss,
                 global_step=tf.contrib.framework.get_global_step(),
@@ -116,8 +116,8 @@ class ValueEstimator():
                 return
 
             # Optimizer Parameters from original paper
-            # self.optimizer = tf.train.RMSPropOptimizer(0.00025, 0.99, 0.0, 1e-6)
-            self.optimizer = tf.train.AdamOptimizer(1e-4)
+            self.optimizer = tf.train.RMSPropOptimizer(0.00025, 0.99, 0.0, 1e-6)
+            # self.optimizer = tf.train.AdamOptimizer(1e-4)
             self.train_op = tf.contrib.layers.optimize_loss(
                 loss=self.loss,
                 global_step=tf.contrib.framework.get_global_step(),
@@ -131,6 +131,7 @@ class ValueEstimator():
             max_value = tf.reduce_max(self.logits)
             tf.scalar_summary("value_net_loss", self.loss)
             tf.scalar_summary("max_value", max_value)
+            tf.histogram_summary("reward_targets", self.targets)
 
             summary_ops = tf.get_collection(tf.GraphKeys.SUMMARIES)
             self.summaries = tf.merge_summary([s for s in summary_ops if "value_net" in s.name])
