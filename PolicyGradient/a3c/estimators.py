@@ -4,23 +4,19 @@ import tensorflow as tf
 def build_shared_network(X, add_summaries=False):
     # Three convolutional layers
     conv1 = tf.contrib.layers.conv2d(
-        X, 32, 8, 4, activation_fn=tf.nn.relu, scope="conv1")
+        X, 16, 8, 4, activation_fn=tf.nn.relu, scope="conv1")
     conv2 = tf.contrib.layers.conv2d(
-        conv1, 64, 4, 2, activation_fn=tf.nn.relu, scope="conv2")
-    conv3 = tf.contrib.layers.conv2d(
-        conv2, 64, 3, 1, activation_fn=tf.nn.relu, scope="conv3")
+        conv1, 32, 4, 2, activation_fn=tf.nn.relu, scope="conv2")
 
     # Fully connected layer
-    flattened = tf.contrib.layers.flatten(conv3)
     fc1 = tf.contrib.layers.fully_connected(
-        inputs=flattened,
+        inputs=tf.contrib.layers.flatten(conv2),
         num_outputs=256,
         scope="fc1")
 
     if add_summaries:
         tf.contrib.layers.summarize_activation(conv1)
         tf.contrib.layers.summarize_activation(conv2)
-        tf.contrib.layers.summarize_activation(conv3)
         tf.contrib.layers.summarize_activation(fc1)
 
     return fc1
