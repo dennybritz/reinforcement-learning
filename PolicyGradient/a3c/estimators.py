@@ -45,20 +45,21 @@ class PolicyEstimator():
                 return
 
             # We add cross-entropy to the loss to encourage exploration
-            self.cross_entropy = tf.nn.sparse_softmax_cross_entropy_with_logits(self.logits, self.actions)
+            self.cross_entropy = -tf.reduce_sum(self.probs * tf.log(self.probs), 1)
 
             # Get the predictions for the chosen actions only
             gather_indices = tf.range(batch_size) * tf.shape(self.probs)[1] + self.actions
             self.picked_action_probs = tf.gather(tf.reshape(self.probs, [-1]), gather_indices)
 
-            self.losses = - (tf.log(self.picked_action_probs) * self.targets + 0.1 * self.cross_entropy)
+            self.losses = - (tf.log(self.picked_action_probs) * self.targets + 0.01 * self.cross_entropy)
             self.loss = tf.reduce_sum(self.losses)
 
             tf.scalar_summary("policy_net_loss", self.loss)
             tf.histogram_summary("policy_net_cross_entropy", self.cross_entropy)
 
             # Optimizer Parameters from original paper
-            self.optimizer = tf.train.RMSPropOptimizer(0.00025, 0.99, 0.0, 1e-6)
+            # self.optimizer = tf.train.RMSPropOptimizer(0.00025, 0.99, 0.0, 1e-6)
+            self.optimizer = tf.train.AdamOptimizer(1e-4)
             self.train_op = tf.contrib.layers.optimize_loss(
                 loss=self.loss,
                 global_step=tf.contrib.framework.get_global_step(),
@@ -115,7 +116,8 @@ class ValueEstimator():
                 return
 
             # Optimizer Parameters from original paper
-            self.optimizer = tf.train.RMSPropOptimizer(0.00025, 0.99, 0.0, 1e-6)
+            # self.optimizer = tf.train.RMSPropOptimizer(0.00025, 0.99, 0.0, 1e-6)
+            self.optimizer = tf.train.AdamOptimizer(1e-4)
             self.train_op = tf.contrib.layers.optimize_loss(
                 loss=self.loss,
                 global_step=tf.contrib.framework.get_global_step(),
