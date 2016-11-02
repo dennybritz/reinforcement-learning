@@ -126,7 +126,7 @@ class Worker(object):
         actions = []
 
         for transition in transitions[::-1]:
-            reward = transition.reward + self.discount_factor * reward
+            reward += transition.reward + self.discount_factor * reward
             policy_target = (reward - self._value_net_predict(transition.state, sess))
 
             # Accumulate updates
