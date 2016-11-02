@@ -44,8 +44,8 @@ tf.reset_default_graph()
 global_step = tf.Variable(0, name="global_step", trainable=False)
 
 with tf.variable_scope("global") as vs:
-    value_net = ValueEstimator()
-    policy_net = PolicyEstimator(num_outputs=len(VALID_ACTIONS), reuse=True)
+    policy_net = PolicyEstimator(num_outputs=len(VALID_ACTIONS))
+    value_net = ValueEstimator(reuse=True)
 
 global_counter = itertools.count()
 

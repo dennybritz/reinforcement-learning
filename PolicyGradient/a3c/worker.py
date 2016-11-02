@@ -56,6 +56,7 @@ class Worker(object):
             tf.contrib.slim.get_variables(scope="global", collection=tf.GraphKeys.TRAINABLE_VARIABLES),
             tf.contrib.slim.get_variables(scope=self.name, collection=tf.GraphKeys.TRAINABLE_VARIABLES))
 
+
         self.state = None
 
     def run(self, sess, coord, t_max):
@@ -67,7 +68,7 @@ class Worker(object):
                     # Copy Parameters from the global nets
                     sess.run(self.copy_params_op)
 
-                    # Run on iteration to collect gradients
+                    # Collect experience
                     transitions = self.run_n_steps(t_max, sess)
 
                     _, _, policy_net_summaries, value_net_summaries = self.apply_gradients(transitions, sess)
