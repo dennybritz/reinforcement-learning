@@ -117,7 +117,7 @@ class Worker(object):
         reward = 0.0
         if not transitions[-1].done:
             # Bootstrap from the last state
-            reward = self._value_net_predict(self.state, sess)
+            reward = self._value_net_predict(transitions[-1].state, sess)
 
         # Accumulate examples
         states = []
@@ -126,7 +126,7 @@ class Worker(object):
         actions = []
 
         for transition in transitions[::-1]:
-            reward += transition.reward + self.discount_factor * reward
+            reward = transition.reward + self.discount_factor * reward
             policy_target = (reward - self._value_net_predict(transition.state, sess))
 
             # Accumulate updates

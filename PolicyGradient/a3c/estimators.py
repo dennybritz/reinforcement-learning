@@ -101,7 +101,11 @@ class ValueEstimator():
 
         with tf.variable_scope("value_net"):
             flattened = tf.contrib.layers.flatten(conv3)
-            fc1 = tf.contrib.layers.fully_connected(flattened, 512)
+            fc1 = tf.contrib.layers.fully_connected(
+                inputs=flattened,
+                num_outputs=512,
+                weights_initializer=tf.zeros_initializer,
+                biases_initializer=tf.zeros_initializer)
             self.logits = tf.contrib.layers.fully_connected(fc1, 1)
             self.logits = tf.squeeze(self.logits, squeeze_dims=[1])
 
@@ -132,6 +136,9 @@ class ValueEstimator():
             tf.scalar_summary("value_net_loss", self.loss)
             tf.scalar_summary("max_value", max_value)
             tf.histogram_summary("reward_targets", self.targets)
+            tf.scalar_summary("max_reward", tf.reduce_max(self.targets))
+            tf.scalar_summary("min_reward", tf.reduce_min(self.targets))
+            tf.scalar_summary("mean_reward", tf.reduce_mean(self.targets))
 
             summary_ops = tf.get_collection(tf.GraphKeys.SUMMARIES)
             self.summaries = tf.merge_summary([s for s in summary_ops if "value_net" in s.name])
