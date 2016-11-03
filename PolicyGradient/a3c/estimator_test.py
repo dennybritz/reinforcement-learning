@@ -19,111 +19,111 @@ from estimators import ValueEstimator, PolicyEstimator
 
 
 def make_env():
-    return gym.envs.make("Breakout-v0")
+  return gym.envs.make("Breakout-v0")
 
 VALID_ACTIONS = [0, 1, 2, 3]
 
 class PolicyEstimatorTest(tf.test.TestCase):
-    def testPredict(self):
-        env = make_env()
-        sp = StateProcessor()
-        estimator = PolicyEstimator(len(VALID_ACTIONS))
+  def testPredict(self):
+    env = make_env()
+    sp = StateProcessor()
+    estimator = PolicyEstimator(len(VALID_ACTIONS))
 
-        with self.test_session() as sess:
-            sess.run(tf.initialize_all_variables())
+    with self.test_session() as sess:
+      sess.run(tf.initialize_all_variables())
 
-            # Generate a state
-            state = sp.process(env.reset())
-            processed_state = atari_helpers.atari_make_initial_state(state)
-            processed_states = np.array([processed_state])
+      # Generate a state
+      state = sp.process(env.reset())
+      processed_state = atari_helpers.atari_make_initial_state(state)
+      processed_states = np.array([processed_state])
 
-            # Run feeds
-            feed_dict = {
-                estimator.states: processed_states,
-                estimator.targets: [1.0],
-                estimator.actions: [1]
-            }
-            loss = sess.run(estimator.loss, feed_dict)
-            pred = sess.run(estimator.predictions, feed_dict)
+      # Run feeds
+      feed_dict = {
+        estimator.states: processed_states,
+        estimator.targets: [1.0],
+        estimator.actions: [1]
+      }
+      loss = sess.run(estimator.loss, feed_dict)
+      pred = sess.run(estimator.predictions, feed_dict)
 
-            # Assertions
-            self.assertTrue(loss > 0.0)
-            self.assertEqual(pred["probs"].shape, (1, len(VALID_ACTIONS)))
-            self.assertEqual(pred["logits"].shape, (1, len(VALID_ACTIONS)))
+      # Assertions
+      self.assertTrue(loss > 0.0)
+      self.assertEqual(pred["probs"].shape, (1, len(VALID_ACTIONS)))
+      self.assertEqual(pred["logits"].shape, (1, len(VALID_ACTIONS)))
 
-    def testGradient(self):
-        env = make_env()
-        sp = StateProcessor()
-        estimator = PolicyEstimator(len(VALID_ACTIONS))
+  def testGradient(self):
+    env = make_env()
+    sp = StateProcessor()
+    estimator = PolicyEstimator(len(VALID_ACTIONS))
 
-        with self.test_session() as sess:
-            sess.run(tf.initialize_all_variables())
+    with self.test_session() as sess:
+      sess.run(tf.initialize_all_variables())
 
-            # Generate a state
-            state = sp.process(env.reset())
-            processed_state = atari_helpers.atari_make_initial_state(state)
-            processed_states = np.array([processed_state])
+      # Generate a state
+      state = sp.process(env.reset())
+      processed_state = atari_helpers.atari_make_initial_state(state)
+      processed_states = np.array([processed_state])
 
-            # Run feeds
-            feed_dict = {
-                estimator.states: processed_states,
-                estimator.targets: [1.0],
-                estimator.actions: [1]
-            }
-            loss = sess.run(estimator.train_op, feed_dict)
+      # Run feeds
+      feed_dict = {
+        estimator.states: processed_states,
+        estimator.targets: [1.0],
+        estimator.actions: [1]
+      }
+      loss = sess.run(estimator.train_op, feed_dict)
 
-            # Assertions
-            self.assertTrue(loss > 0.0)
+      # Assertions
+      self.assertTrue(loss > 0.0)
 
 
 class ValueEstimatorTest(tf.test.TestCase):
-    def testPredict(self):
-        env = make_env()
-        sp = StateProcessor()
-        estimator = ValueEstimator()
+  def testPredict(self):
+    env = make_env()
+    sp = StateProcessor()
+    estimator = ValueEstimator()
 
-        with self.test_session() as sess:
-            sess.run(tf.initialize_all_variables())
+    with self.test_session() as sess:
+      sess.run(tf.initialize_all_variables())
 
-            # Generate a state
-            state = sp.process(env.reset())
-            processed_state = atari_helpers.atari_make_initial_state(state)
-            processed_states = np.array([processed_state])
+      # Generate a state
+      state = sp.process(env.reset())
+      processed_state = atari_helpers.atari_make_initial_state(state)
+      processed_states = np.array([processed_state])
 
-            # Run feeds
-            feed_dict = {
-                estimator.states: processed_states,
-                estimator.targets: [1.0],
-            }
-            loss = sess.run(estimator.loss, feed_dict)
-            pred = sess.run(estimator.predictions, feed_dict)
+      # Run feeds
+      feed_dict = {
+        estimator.states: processed_states,
+        estimator.targets: [1.0],
+      }
+      loss = sess.run(estimator.loss, feed_dict)
+      pred = sess.run(estimator.predictions, feed_dict)
 
-            # Assertions
-            self.assertTrue(loss > 0.0)
-            self.assertEqual(pred["logits"].shape, (1,))
+      # Assertions
+      self.assertTrue(loss > 0.0)
+      self.assertEqual(pred["logits"].shape, (1,))
 
-    def testGradient(self):
-        env = make_env()
-        sp = StateProcessor()
-        estimator = ValueEstimator()
+  def testGradient(self):
+    env = make_env()
+    sp = StateProcessor()
+    estimator = ValueEstimator()
 
-        with self.test_session() as sess:
-            sess.run(tf.initialize_all_variables())
+    with self.test_session() as sess:
+      sess.run(tf.initialize_all_variables())
 
-            # Generate a state
-            state = sp.process(env.reset())
-            processed_state = atari_helpers.atari_make_initial_state(state)
-            processed_states = np.array([processed_state])
+      # Generate a state
+      state = sp.process(env.reset())
+      processed_state = atari_helpers.atari_make_initial_state(state)
+      processed_states = np.array([processed_state])
 
-            # Run feeds
-            feed_dict = {
-                estimator.states: processed_states,
-                estimator.targets: [1.0],
-            }
-            loss = sess.run(estimator.train_op, feed_dict)
+      # Run feeds
+      feed_dict = {
+        estimator.states: processed_states,
+        estimator.targets: [1.0],
+      }
+      loss = sess.run(estimator.train_op, feed_dict)
 
-            # Assertions
-            self.assertTrue(loss > 0.0)
+      # Assertions
+      self.assertTrue(loss > 0.0)
 
 if __name__ == '__main__':
-    unittest.main()
+  unittest.main()

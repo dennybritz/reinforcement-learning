@@ -22,135 +22,168 @@ Transition = collections.namedtuple("Transition", ["state", "action", "reward", 
 
 
 def make_copy_params_op(v1_list, v2_list):
-    v1_list = list(sorted(v1_list, key=lambda v: v.name))
-    v2_list = list(sorted(v2_list, key=lambda v: v.name))
+  """
+  Creates an operation that copies parameters from variable in v1_list to variables in v2_list.
+  The ordering of the variables in the list must be identical.
+  """
+  v1_list = list(sorted(v1_list, key=lambda v: v.name))
+  v2_list = list(sorted(v2_list, key=lambda v: v.name))
 
-    update_ops = []
-    for v1, v2 in zip(v1_list, v2_list):
-        op = v2.assign(v1)
-        update_ops.append(op)
+  update_ops = []
+  for v1, v2 in zip(v1_list, v2_list):
+    op = v2.assign(v1)
+    update_ops.append(op)
 
-    return update_ops
+  return update_ops
 
 
 class Worker(object):
-    def __init__(self, name, env, policy_net, value_net, global_counter, discount_factor, summary_writer=None):
-        self.name = name
-        self.discount_factor = discount_factor
-        self.global_step = tf.contrib.framework.get_global_step()
-        self.global_policy_net = policy_net
-        self.global_value_net = value_net
-        self.global_counter = global_counter
-        self.local_counter = itertools.count()
-        self.sp = StateProcessor()
-        self.summary_writer = summary_writer
-        self.env = env
+  """
+  An A3C worker thread. Runs episodes locally and updates global shared value and policy nets.
 
-        # Create local policy/value nets that are not updated asynchronously
-        with tf.variable_scope(name):
-            self.policy_net = PolicyEstimator(policy_net.num_outputs)
-            self.value_net = ValueEstimator(reuse=True)
+  Args:
+    name: A unique name for this worker
+    env: The Gym environment used by this worker
+    policy_net: Instance of the globally shared policy net
+    value_net: Instance of the globally shared value net
+    global_counter: Iterator that holds the global step
+    discount_factor: Reward discount factor
+    summary_writer: A tf.train.SummaryWriter for Tensorboard summaries
+    max_global_steps: If set, stop coordinator when global_counter > max_global_steps
+  """
+  def __init__(self, name, env, policy_net, value_net, global_counter, discount_factor=0.99, summary_writer=None, max_global_steps=None):
+    self.name = name
+    self.discount_factor = discount_factor
+    self.max_global_steps = max_global_steps
+    self.global_step = tf.contrib.framework.get_global_step()
+    self.global_policy_net = policy_net
+    self.global_value_net = value_net
+    self.global_counter = global_counter
+    self.local_counter = itertools.count()
+    self.sp = StateProcessor()
+    self.summary_writer = summary_writer
+    self.env = env
 
-        # Op to copy params from global policy/valuenets
-        self.copy_params_op = make_copy_params_op(
-            tf.contrib.slim.get_variables(scope="global", collection=tf.GraphKeys.TRAINABLE_VARIABLES),
-            tf.contrib.slim.get_variables(scope=self.name, collection=tf.GraphKeys.TRAINABLE_VARIABLES))
+    # Create local policy/value nets that are not updated asynchronously
+    with tf.variable_scope(name):
+      self.policy_net = PolicyEstimator(policy_net.num_outputs)
+      self.value_net = ValueEstimator(reuse=True)
 
+    # Op to copy params from global policy/valuenets
+    self.copy_params_op = make_copy_params_op(
+      tf.contrib.slim.get_variables(scope="global", collection=tf.GraphKeys.TRAINABLE_VARIABLES),
+      tf.contrib.slim.get_variables(scope=self.name, collection=tf.GraphKeys.TRAINABLE_VARIABLES))
 
-        self.state = None
+    self.state = None
 
-    def run(self, sess, coord, t_max):
-        with sess.as_default(), sess.graph.as_default():
-            # Create a new env for this thead
-            self.state = atari_helpers.atari_make_initial_state(self.sp.process(self.env.reset()))
-            try:
-                while not coord.should_stop():
-                    # Copy Parameters from the global nets
-                    sess.run(self.copy_params_op)
+  def run(self, sess, coord, t_max):
+    with sess.as_default(), sess.graph.as_default():
+      # Initial state
+      self.state = atari_helpers.atari_make_initial_state(self.sp.process(self.env.reset()))
+      try:
+        while not coord.should_stop():
+          # Copy Parameters from the global networks
+          sess.run(self.copy_params_op)
 
-                    # Collect experience
-                    transitions = self.run_n_steps(t_max, sess)
+          # Collect some experience
+          transitions, local_t, global_t = self.run_n_steps(t_max, sess)
 
-                    _, _, policy_net_summaries, value_net_summaries = self.apply_gradients(transitions, sess)
+          if self.max_global_steps is not None and global_t >= self.max_global_steps:
+            tf.logging.info("Reached global step {}. Stopping.".format(global_t))
+            coord.request_stop()
+            return
 
-            except tf.errors.CancelledError:
-                return
+          # Update the global networks
+          self.update(transitions, sess)
 
-    def _policy_net_predict(self, state, sess):
-        feed_dict = { self.policy_net.states: [state] }
-        preds = sess.run(self.policy_net.predictions, feed_dict)
-        return preds["probs"][0]
+      except tf.errors.CancelledError:
+        return
 
-    def _value_net_predict(self, state, sess):
-        feed_dict = { self.value_net.states: [state] }
-        preds = sess.run(self.value_net.predictions, feed_dict)
-        return preds["logits"][0]
+  def _policy_net_predict(self, state, sess):
+    feed_dict = { self.policy_net.states: [state] }
+    preds = sess.run(self.policy_net.predictions, feed_dict)
+    return preds["probs"][0]
 
-    def run_n_steps(self, n, sess):
-        transitions = []
-        for _ in range(n):
-            # Take a step
-            action_probs = self._policy_net_predict(self.state, sess)
-            action = np.random.choice(np.arange(len(action_probs)), p=action_probs)
-            next_state, reward, done, _ = self.env.step(action)
-            next_state = atari_helpers.atari_make_next_state(self.state, self.sp.process(next_state))
+  def _value_net_predict(self, state, sess):
+    feed_dict = { self.value_net.states: [state] }
+    preds = sess.run(self.value_net.predictions, feed_dict)
+    return preds["logits"][0]
 
-            # Store transition
-            transitions.append(Transition(
-              state=self.state, action=action, reward=reward, next_state=next_state, done=done))
+  def run_n_steps(self, n, sess):
+    transitions = []
+    for _ in range(n):
+      # Take a step
+      action_probs = self._policy_net_predict(self.state, sess)
+      action = np.random.choice(np.arange(len(action_probs)), p=action_probs)
+      next_state, reward, done, _ = self.env.step(action)
+      next_state = atari_helpers.atari_make_next_state(self.state, self.sp.process(next_state))
 
-            # Increase local and global counters
-            local_t = next(self.local_counter)
-            global_t = next(self.global_counter)
+      # Store transition
+      transitions.append(Transition(
+        state=self.state, action=action, reward=reward, next_state=next_state, done=done))
 
-            if local_t % 100 == 0:
-                tf.logging.info("{}: local Step {}, global step {}".format(self.name, local_t, global_t))
+      # Increase local and global counters
+      local_t = next(self.local_counter)
+      global_t = next(self.global_counter)
 
-            if done:
-                self.state = atari_helpers.atari_make_initial_state(self.sp.process(self.env.reset()))
-                break
-            else:
-                self.state = next_state
-        return transitions
+      if local_t % 100 == 0:
+        tf.logging.info("{}: local Step {}, global step {}".format(self.name, local_t, global_t))
 
-    def apply_gradients(self, transitions, sess):
-        reward = 0.0
-        if not transitions[-1].done:
-            # Bootstrap from the last state
-            reward = self._value_net_predict(transitions[-1].state, sess)
+      if done:
+        self.state = atari_helpers.atari_make_initial_state(self.sp.process(self.env.reset()))
+        break
+      else:
+        self.state = next_state
+    return transitions, local_t, global_t
 
-        # Accumulate examples
-        states = []
-        policy_targets = []
-        value_targets = []
-        actions = []
+  def update(self, transitions, sess):
+    """
+    Updates global policy and value networks based on collected experience
 
-        for transition in transitions[::-1]:
-            reward = transition.reward + self.discount_factor * reward
-            policy_target = (reward - self._value_net_predict(transition.state, sess))
+    Args:
+      transitions: A list of experience transitions
+      sess: A Tensorflow session
+    """
 
-            # Accumulate updates
-            states.append(transition.state)
-            actions.append(transition.action)
-            policy_targets.append(policy_target)
-            value_targets.append(reward)
+    # If we episode was not done we bootstrap the value from the last state
+    reward = 0.0
+    if not transitions[-1].done:
+      reward = self._value_net_predict(transitions[-1].state, sess)
 
-        # Apply policy net update
-        feed_dict = {
-            self.global_policy_net.states: np.array(states),
-            self.global_policy_net.targets: policy_targets,
-            self.global_policy_net.actions: actions,
-            self.global_value_net.states: np.array(states),
-            self.global_value_net.targets: value_targets,
-        }
+    # Accumulate minibatch exmaples
+    states = []
+    policy_targets = []
+    value_targets = []
+    actions = []
 
-        global_step, policy_net_loss, policy_net_summaries, value_net_loss, value_net_summaries = sess.run(
-            [self.global_step, self.global_policy_net.train_op, self.global_policy_net.summaries, self.global_value_net.train_op, self.global_value_net.summaries],
-            feed_dict)
+    for transition in transitions[::-1]:
+      reward = transition.reward + self.discount_factor * reward
+      policy_target = (reward - self._value_net_predict(transition.state, sess))
+      # Accumulate updates
+      states.append(transition.state)
+      actions.append(transition.action)
+      policy_targets.append(policy_target)
+      value_targets.append(reward)
 
-        if self.summary_writer is not None:
-            self.summary_writer.add_summary(policy_net_summaries, global_step)
-            self.summary_writer.add_summary(value_net_summaries, global_step)
-            self.summary_writer.flush()
+    feed_dict = {
+      self.global_policy_net.states: np.array(states),
+      self.global_policy_net.targets: policy_targets,
+      self.global_policy_net.actions: actions,
+      self.global_value_net.states: np.array(states),
+      self.global_value_net.targets: value_targets,
+    }
 
-        return policy_net_loss, value_net_loss, policy_net_summaries, value_net_summaries
+    # Apply policy net update
+    global_step, pnet_loss, pnet_summaries, vnet_loss, vnet_summaries = sess.run(
+      [self.global_step, self.global_policy_net.train_op,
+      self.global_policy_net.summaries, self.global_value_net.train_op,
+      self.global_value_net.summaries],
+      feed_dict)
+
+    # Write summaries
+    if self.summary_writer is not None:
+      self.summary_writer.add_summary(pnet_summaries, global_step)
+      self.summary_writer.add_summary(vnet_summaries, global_step)
+      self.summary_writer.flush()
+
+    return pnet_loss, vnet_loss, pnet_summaries, vnet_summaries

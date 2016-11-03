@@ -18,71 +18,92 @@ if import_path not in sys.path:
 
 # from lib import plotting
 from estimators import ValueEstimator, PolicyEstimator
-from policy_eval import PolicyEval
+from policy_monitor import PolicyMonitor
 from worker import Worker
 
 tf.flags.DEFINE_string("model_dir", "/tmp/a3c", "Directory to write to")
+
 tf.flags.DEFINE_integer("t_max", 5, "Number of steps before performing an update")
-tf.flags.DEFINE_integer("eval_every", 120, "Evaluate the policy ever [eval_every] seconds")
+tf.flags.DEFINE_integer("max_global_steps", None, "Stop after this many steps in the environment")
+tf.flags.DEFINE_integer("eval_every", 300, "Evaluate the policy ever [eval_every] seconds")
+tf.flags.DEFINE_boolean("reset", False, "If true, delete the existing model directory")
 
 FLAGS = tf.flags.FLAGS
 
-
 def make_env():
-    return gym.envs.make("Breakout-v0")
+  return gym.envs.make("Breakout-v0")
 
 VALID_ACTIONS = [0, 1, 2, 3]
 NUM_WORKERS = multiprocessing.cpu_count()
+MODEL_DIR = FLAGS.model_dir
+CHECKPOINT_DIR = os.path.join(MODEL_DIR, "checkpoints")
 
-# Create and empty model directory
-model_dir = FLAGS.model_dir
-shutil.rmtree(model_dir, ignore_errors=True)
-os.makedirs(model_dir)
-summary_writer = tf.train.SummaryWriter(model_dir)
+# Create model directory
+if FLAGS.reset:
+  shutil.rmtree(MODEL_DIR, ignore_errors=True)
 
-tf.reset_default_graph()
+if not os.path.exists(CHECKPOINT_DIR):
+  os.makedirs(CHECKPOINT_DIR)
+
+summary_writer = tf.train.SummaryWriter(os.path.join(MODEL_DIR, "train"))
+
 global_step = tf.Variable(0, name="global_step", trainable=False)
 
+# Create the global policy and value nets
 with tf.variable_scope("global") as vs:
-    policy_net = PolicyEstimator(num_outputs=len(VALID_ACTIONS))
-    value_net = ValueEstimator(reuse=True)
+  policy_net = PolicyEstimator(num_outputs=len(VALID_ACTIONS))
+  value_net = ValueEstimator(reuse=True)
 
+# Global step iterator
 global_counter = itertools.count()
 
+# Create one worker per thread
 workers = []
 for worker_id in range(NUM_WORKERS):
-    # Force workers on CPU
-    # (Tensorflow will automatically use all CPU cores)
-    with tf.device("/cpu:0"):
-        worker = Worker(
-            name="worker_{}".format(worker_id),
-            env=make_env(),
-            policy_net=policy_net,
-            value_net=value_net,
-            global_counter=global_counter,
-            discount_factor = 0.99,
-            summary_writer=summary_writer)
-        workers.append(worker)
+  # Force workers on CPU
+  with tf.device("/cpu:0"):
+    worker = Worker(
+      name="worker_{}".format(worker_id),
+      env=make_env(),
+      policy_net=policy_net,
+      value_net=value_net,
+      global_counter=global_counter,
+      discount_factor = 0.99,
+      summary_writer=summary_writer,
+      max_global_steps=FLAGS.max_global_steps)
+    workers.append(worker)
 
-pe = PolicyEval(
-    env=make_env(),
-    policy_net=policy_net,
-    summary_writer=summary_writer)
+saver = tf.train.Saver(keep_checkpoint_every_n_hours=2.0, max_to_keep=10)
+
+# Used to occasionally save videos for our policy
+# and write rewards to Tensorboard
+pe = PolicyMonitor(
+  env=make_env(),
+  policy_net=policy_net,
+  summary_writer=summary_writer,
+  saver=saver)
 
 with tf.Session() as sess:
-    sess.run(tf.initialize_all_variables())
-    coord = tf.train.Coordinator()
+  sess.run(tf.initialize_all_variables())
+  coord = tf.train.Coordinator()
 
-    # Start workers
-    worker_threads = []
-    for worker in workers:
-        worker_fn = lambda: worker.run(sess, coord, FLAGS.t_max)
-        t = threading.Thread(target=worker_fn)
-        t.start()
-        worker_threads.append(t)
+  # Load a previous checkpoint if it exists
+  latest_checkpoint = tf.train.latest_checkpoint(CHECKPOINT_DIR)
+  if latest_checkpoint:
+    print("Loading model checkpoint: {}".format(latest_checkpoint))
+    saver.restore(sess, latest_checkpoint)
 
-    # Start a thread for policy eval job
-    threading.Thread(target=lambda: pe.continuous_eval(FLAGS.eval_every, sess)).start()
+  # Start workers
+  worker_threads = []
+  for worker in workers:
+    worker_fn = lambda: worker.run(sess, coord, FLAGS.t_max)
+    t = threading.Thread(target=worker_fn)
+    t.start()
+    worker_threads.append(t)
 
-    # Wait for all workers to finish
-    coord.join(worker_threads)
+  # Start a thread for policy eval task
+  monitor_thread = threading.Thread(target=lambda: pe.continuous_eval(FLAGS.eval_every, sess, coord))
+  monitor_thread.start()
+
+  # Wait for all workers to finish
+  coord.join(worker_threads)
