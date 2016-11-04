@@ -69,44 +69,41 @@ class PolicyEstimator():
     with tf.variable_scope("policy_net"):
       self.logits = tf.contrib.layers.fully_connected(fc1, num_outputs, activation_fn=None)
       self.probs = tf.nn.softmax(self.logits)
+      self.probs = tf.clip_by_value(self.probs, 1e-6, 1.0)
 
       self.predictions = {
         "logits": self.logits,
         "probs": self.probs
       }
 
-      if not trainable:
-        return
-
       # We add cross-entropy to the loss to encourage exploration
-      self.cross_entropy = -tf.reduce_sum(self.probs * tf.log(self.probs), 1)
+      self.cross_entropy = -tf.reduce_sum(self.probs * tf.log(self.probs), 1, name="cross_entropy")
+      self.cross_entropy_mean = tf.reduce_mean(self.cross_entropy, name="cross_entropy_mean")
 
       # Get the predictions for the chosen actions only
       gather_indices = tf.range(batch_size) * tf.shape(self.probs)[1] + self.actions
       self.picked_action_probs = tf.gather(tf.reshape(self.probs, [-1]), gather_indices)
 
       self.losses = - (tf.log(self.picked_action_probs) * self.targets + 0.01 * self.cross_entropy)
-      self.loss = tf.reduce_sum(self.losses)
+      self.loss = tf.reduce_sum(self.losses, name="loss")
 
-      tf.scalar_summary("policy_net/loss", self.loss)
-      tf.scalar_summary("policy_net/advantage_mean", tf.reduce_mean(self.targets))
-      tf.scalar_summary("policy_net/entropy_mean", tf.reduce_mean(self.cross_entropy))
-      tf.histogram_summary("policy_net/cross_entropy", self.cross_entropy)
-      tf.histogram_summary("policy_net/actions", self.actions)
+      tf.scalar_summary(self.loss.op.name, self.loss)
+      tf.scalar_summary(self.cross_entropy_mean.op.name, self.cross_entropy_mean)
+      tf.histogram_summary(self.cross_entropy.op.name, self.cross_entropy)
 
-      # Optimizer Parameters from original paper
-      self.optimizer = tf.train.AdamOptimizer(1e-4)
-      self.train_op = tf.contrib.layers.optimize_loss(
-        loss=self.loss,
-        global_step=tf.contrib.framework.get_global_step(),
-        learning_rate=1e-4,
-        optimizer=self.optimizer,
-        # clip_gradients=5.0,
-        summaries=tf.contrib.layers.optimizers.OPTIMIZER_SUMMARIES)
+      if trainable:
+        self.optimizer = tf.train.AdamOptimizer(1e-4)
+        self.grads_and_vars = self.optimizer.compute_gradients(self.loss)
+        self.grads_and_vars = [[grad, var] for grad, var in self.grads_and_vars if grad is not None]
+        self.train_op = self.optimizer.apply_gradients(self.grads_and_vars,
+          global_step=tf.contrib.framework.get_global_step())
 
-      # Merge summaries from this network and the shared network (but not the value net)
-      summary_ops = tf.get_collection(tf.GraphKeys.SUMMARIES)
-      self.summaries = tf.merge_summary([s for s in summary_ops if "policy_net" in s.name or "shared" in s.name])
+    # Merge summaries from this network and the shared network (but not the value net)
+    var_scope_name = tf.get_variable_scope().name
+    summary_ops = tf.get_collection(tf.GraphKeys.SUMMARIES)
+    sumaries = [s for s in summary_ops if "policy_net" in s.name or "shared" in s.name]
+    sumaries = [s for s in summary_ops if var_scope_name in s.name]
+    self.summaries = tf.merge_summary(sumaries)
 
 
 class ValueEstimator():
@@ -139,39 +136,36 @@ class ValueEstimator():
         inputs=fc1,
         num_outputs=1,
         activation_fn=None)
-      self.logits = tf.squeeze(self.logits, squeeze_dims=[1])
+      self.logits = tf.squeeze(self.logits, squeeze_dims=[1], name="logits")
 
       self.losses = tf.squared_difference(self.logits, self.targets)
-      self.loss = tf.reduce_sum(self.losses)
+      self.loss = tf.reduce_sum(self.losses, name="loss")
 
       self.predictions = {
         "logits": self.logits
       }
 
-      if not trainable:
-        return
-
-      # Optimizer Parameters from original paper
-      self.optimizer = tf.train.AdamOptimizer(1e-4)
-      self.train_op = tf.contrib.layers.optimize_loss(
-        loss=self.loss,
-        global_step=tf.contrib.framework.get_global_step(),
-        learning_rate=1e-4,
-        optimizer=self.optimizer,
-        # clip_gradients=5.0,
-        summaries=tf.contrib.layers.optimizers.OPTIMIZER_SUMMARIES)
-
       # Summaries
-      tf.scalar_summary("value_net/loss", self.loss)
-      tf.scalar_summary("value_net/max_value", tf.reduce_max(self.logits))
-      tf.scalar_summary("value_net/min_value", tf.reduce_min(self.logits))
-      tf.scalar_summary("value_net/mean_value", tf.reduce_mean(self.logits))
-      tf.scalar_summary("value_net/reward_max", tf.reduce_max(self.targets))
-      tf.scalar_summary("value_net/reward_min", tf.reduce_min(self.targets))
-      tf.scalar_summary("value_net/reward_mean", tf.reduce_mean(self.targets))
-      tf.histogram_summary("value_net/reward_targets", self.targets)
-      tf.histogram_summary("value_net/values", self.logits)
+      prefix = tf.get_variable_scope().name
+      tf.scalar_summary(self.loss.name, self.loss)
+      tf.scalar_summary("{}/max_value".format(prefix), tf.reduce_max(self.logits))
+      tf.scalar_summary("{}/min_value".format(prefix), tf.reduce_min(self.logits))
+      tf.scalar_summary("{}/mean_value".format(prefix), tf.reduce_mean(self.logits))
+      tf.scalar_summary("{}/reward_max".format(prefix), tf.reduce_max(self.targets))
+      tf.scalar_summary("{}/reward_min".format(prefix), tf.reduce_min(self.targets))
+      tf.scalar_summary("{}/reward_mean".format(prefix), tf.reduce_mean(self.targets))
+      tf.histogram_summary("{}/reward_targets".format(prefix), self.targets)
+      tf.histogram_summary("{}/values".format(prefix), self.logits)
 
-      # Merge summaries from this network and the shared network (but not the policy net)
-      summary_ops = tf.get_collection(tf.GraphKeys.SUMMARIES)
-      self.summaries = tf.merge_summary([s for s in summary_ops if "value_net" in s.name or "shared" in s.name])
+      if trainable:
+        self.optimizer = tf.train.AdamOptimizer(1e-4)
+        self.grads_and_vars = self.optimizer.compute_gradients(self.loss)
+        self.grads_and_vars = [[grad, var] for grad, var in self.grads_and_vars if grad is not None]
+        self.train_op = self.optimizer.apply_gradients(self.grads_and_vars,
+          global_step=tf.contrib.framework.get_global_step())
+
+    var_scope_name = tf.get_variable_scope().name
+    summary_ops = tf.get_collection(tf.GraphKeys.SUMMARIES)
+    sumaries = [s for s in summary_ops if "policy_net" in s.name or "shared" in s.name]
+    sumaries = [s for s in summary_ops if var_scope_name in s.name]
+    self.summaries = tf.merge_summary(sumaries)

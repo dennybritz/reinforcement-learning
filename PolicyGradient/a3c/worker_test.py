@@ -86,7 +86,7 @@ class WorkerTest(tf.test.TestCase):
       state = self.sp.process(self.env.reset())
       processed_state = atari_helpers.atari_make_initial_state(state)
       w.state = processed_state
-      transitions = w.run_n_steps(10, sess)
+      transitions, local_t, global_t = w.run_n_steps(10, sess)
       policy_net_loss, value_net_loss, policy_net_summaries, value_net_summaries = w.update(transitions, sess)
 
     self.assertEqual(len(transitions), 10)

@@ -47,7 +47,7 @@ class PolicyEstimatorTest(tf.test.TestCase):
       pred = sess.run(estimator.predictions, feed_dict)
 
       # Assertions
-      self.assertTrue(loss > 0.0)
+      self.assertTrue(loss != 0.0)
       self.assertEqual(pred["probs"].shape, (1, len(VALID_ACTIONS)))
       self.assertEqual(pred["logits"].shape, (1, len(VALID_ACTIONS)))
 
@@ -55,6 +55,7 @@ class PolicyEstimatorTest(tf.test.TestCase):
     env = make_env()
     sp = StateProcessor()
     estimator = PolicyEstimator(len(VALID_ACTIONS))
+    grads = [g for g, _ in estimator.grads_and_vars]
 
     with self.test_session() as sess:
       sess.run(tf.initialize_all_variables())
@@ -64,16 +65,17 @@ class PolicyEstimatorTest(tf.test.TestCase):
       processed_state = atari_helpers.atari_make_initial_state(state)
       processed_states = np.array([processed_state])
 
-      # Run feeds
+      # Run feeds to get gradients
       feed_dict = {
         estimator.states: processed_states,
         estimator.targets: [1.0],
         estimator.actions: [1]
       }
-      loss = sess.run(estimator.train_op, feed_dict)
+      grads_ = sess.run(grads, feed_dict)
 
-      # Assertions
-      self.assertTrue(loss > 0.0)
+      # Apply calculated gradients
+      grad_feed_dict = { k: v for k, v in zip(grads, grads_) }
+      _ = sess.run(estimator.train_op, grad_feed_dict)
 
 
 class ValueEstimatorTest(tf.test.TestCase):
@@ -99,13 +101,14 @@ class ValueEstimatorTest(tf.test.TestCase):
       pred = sess.run(estimator.predictions, feed_dict)
 
       # Assertions
-      self.assertTrue(loss > 0.0)
+      self.assertTrue(loss != 0.0)
       self.assertEqual(pred["logits"].shape, (1,))
 
   def testGradient(self):
     env = make_env()
     sp = StateProcessor()
     estimator = ValueEstimator()
+    grads = [g for g, _ in estimator.grads_and_vars]
 
     with self.test_session() as sess:
       sess.run(tf.initialize_all_variables())
@@ -120,10 +123,11 @@ class ValueEstimatorTest(tf.test.TestCase):
         estimator.states: processed_states,
         estimator.targets: [1.0],
       }
-      loss = sess.run(estimator.train_op, feed_dict)
+      grads_ = sess.run(grads, feed_dict)
 
-      # Assertions
-      self.assertTrue(loss > 0.0)
+      # Apply calculated gradients
+      grad_feed_dict = { k: v for k, v in zip(grads, grads_) }
+      _ = sess.run(estimator.train_op, grad_feed_dict)
 
 if __name__ == '__main__':
   unittest.main()

@@ -165,20 +165,30 @@ class Worker(object):
       policy_targets.append(policy_target)
       value_targets.append(reward)
 
+    # Calculate the gradients
     feed_dict = {
-      self.global_policy_net.states: np.array(states),
-      self.global_policy_net.targets: policy_targets,
-      self.global_policy_net.actions: actions,
-      self.global_value_net.states: np.array(states),
-      self.global_value_net.targets: value_targets,
+      self.policy_net.states: np.array(states),
+      self.policy_net.targets: policy_targets,
+      self.policy_net.actions: actions,
+      self.value_net.states: np.array(states),
+      self.value_net.targets: value_targets,
     }
 
-    # Apply policy net update
-    global_step, pnet_loss, pnet_summaries, vnet_loss, vnet_summaries = sess.run(
-      [self.global_step, self.global_policy_net.train_op,
-      self.global_policy_net.summaries, self.global_value_net.train_op,
-      self.global_value_net.summaries],
-      feed_dict)
+    # Calculate the local gradients
+    pnet_loss, vnet_loss, pnet_grads, vnet_grads, pnet_summaries, vnet_summaries = sess.run([
+      self.policy_net.loss,
+      self.value_net.loss,
+      [g for g, _ in self.policy_net.grads_and_vars],
+      [g for g, _ in self.value_net.grads_and_vars],
+      self.policy_net.summaries,
+      self.value_net.summaries
+    ], feed_dict)
+
+    # Apply the gradients to the global nets
+    pnet_grad_ops = [g for g, _ in self.global_policy_net.grads_and_vars]
+    vnet_grad_ops = [g for g, _ in self.global_value_net.grads_and_vars]
+    grad_feed_dict = { k: v for k, v in zip(pnet_grad_ops + vnet_grad_ops, pnet_grads + vnet_grads)}
+    global_step, _, _, = sess.run([self.global_step, self.global_policy_net.train_op, self.global_value_net.train_op], grad_feed_dict)
 
     # Write summaries
     if self.summary_writer is not None:
