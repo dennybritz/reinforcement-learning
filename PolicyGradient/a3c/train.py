@@ -27,6 +27,7 @@ tf.flags.DEFINE_integer("t_max", 5, "Number of steps before performing an update
 tf.flags.DEFINE_integer("max_global_steps", None, "Stop after this many steps in the environment")
 tf.flags.DEFINE_integer("eval_every", 300, "Evaluate the policy ever [eval_every] seconds")
 tf.flags.DEFINE_boolean("reset", False, "If true, delete the existing model directory")
+tf.flags.DEFINE_integer("parallelism", None, "Number of threads to run. If not given we run [num_cpu_cores] threads.")
 
 FLAGS = tf.flags.FLAGS
 
@@ -35,6 +36,10 @@ def make_env():
 
 VALID_ACTIONS = [0, 1, 2, 3]
 NUM_WORKERS = multiprocessing.cpu_count()
+
+if FLAGS.parallelism:
+  NUM_WORKERS = FLAGS.parallelism
+
 MODEL_DIR = FLAGS.model_dir
 CHECKPOINT_DIR = os.path.join(MODEL_DIR, "checkpoints")
 
