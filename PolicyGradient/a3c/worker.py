@@ -36,6 +36,17 @@ def make_copy_params_op(v1_list, v2_list):
 
   return update_ops
 
+def make_train_op(local_estimator, global_estimator):
+  """
+  Creates an op that applies the local estimator gradients
+  to the global estimator.
+  """
+  local_grads, _ = zip(*local_estimator.grads_and_vars)
+  _, global_vars = zip(*global_estimator.grads_and_vars)
+  local_global_grads_and_vars = list(zip(local_grads, global_vars))
+  return global_estimator.optimizer.apply_gradients(local_global_grads_and_vars,
+          global_step=tf.contrib.framework.get_global_step())
+
 
 class Worker(object):
   """
@@ -73,6 +84,9 @@ class Worker(object):
     self.copy_params_op = make_copy_params_op(
       tf.contrib.slim.get_variables(scope="global", collection=tf.GraphKeys.TRAINABLE_VARIABLES),
       tf.contrib.slim.get_variables(scope=self.name, collection=tf.GraphKeys.TRAINABLE_VARIABLES))
+
+    self.vnet_train_op = make_train_op(self.value_net, self.global_value_net)
+    self.pnet_train_op = make_train_op(self.policy_net, self.global_policy_net)
 
     self.state = None
 
@@ -174,21 +188,16 @@ class Worker(object):
       self.value_net.targets: value_targets,
     }
 
-    # Calculate the local gradients
-    pnet_loss, vnet_loss, pnet_grads, vnet_grads, pnet_summaries, vnet_summaries = sess.run([
+    # Train the global estimators
+    global_step, pnet_loss, vnet_loss, _, _, pnet_summaries, vnet_summaries = sess.run([
+      self.global_step,
       self.policy_net.loss,
       self.value_net.loss,
-      [g for g, _ in self.policy_net.grads_and_vars],
-      [g for g, _ in self.value_net.grads_and_vars],
+      self.pnet_train_op,
+      self.vnet_train_op,
       self.policy_net.summaries,
       self.value_net.summaries
     ], feed_dict)
-
-    # Apply the gradients to the global nets
-    pnet_grad_ops = [g for g, _ in self.global_policy_net.grads_and_vars]
-    vnet_grad_ops = [g for g, _ in self.global_value_net.grads_and_vars]
-    grad_feed_dict = { k: v for k, v in zip(pnet_grad_ops + vnet_grad_ops, pnet_grads + vnet_grads)}
-    global_step, _, _, = sess.run([self.global_step, self.global_policy_net.train_op, self.global_value_net.train_op], grad_feed_dict)
 
     # Write summaries
     if self.summary_writer is not None:

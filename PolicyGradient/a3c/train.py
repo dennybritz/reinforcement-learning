@@ -47,21 +47,28 @@ if not os.path.exists(CHECKPOINT_DIR):
 
 summary_writer = tf.train.SummaryWriter(os.path.join(MODEL_DIR, "train"))
 
-global_step = tf.Variable(0, name="global_step", trainable=False)
+with tf.device("/cpu:0"):
 
-# Create the global policy and value nets
-with tf.variable_scope("global") as vs:
-  policy_net = PolicyEstimator(num_outputs=len(VALID_ACTIONS))
-  value_net = ValueEstimator(reuse=True)
+  global_step = tf.Variable(0, name="global_step", trainable=False)
 
-# Global step iterator
-global_counter = itertools.count()
+  # Create the global policy and value nets
+  with tf.variable_scope("global") as vs:
+    policy_net = PolicyEstimator(num_outputs=len(VALID_ACTIONS))
+    value_net = ValueEstimator(reuse=True)
 
-# Create one worker per thread
-workers = []
-for worker_id in range(NUM_WORKERS):
-  # Force workers on CPU
-  with tf.device("/cpu:0"):
+  # Global step iterator
+  global_counter = itertools.count()
+
+  # Create one worker per thread
+  workers = []
+  for worker_id in range(NUM_WORKERS):
+    # We only write summaries on one of the workers because they're
+    # pretty much identical
+    worker_summary_writer = None
+    if worker_id == 0:
+      worker_summary_writer = summary_writer
+
+    # Force workers on CPU
     worker = Worker(
       name="worker_{}".format(worker_id),
       env=make_env(),
@@ -69,19 +76,19 @@ for worker_id in range(NUM_WORKERS):
       value_net=value_net,
       global_counter=global_counter,
       discount_factor = 0.99,
-      summary_writer=summary_writer,
+      summary_writer=worker_summary_writer,
       max_global_steps=FLAGS.max_global_steps)
     workers.append(worker)
 
-saver = tf.train.Saver(keep_checkpoint_every_n_hours=2.0, max_to_keep=10)
+  saver = tf.train.Saver(keep_checkpoint_every_n_hours=2.0, max_to_keep=10)
 
-# Used to occasionally save videos for our policy
-# and write rewards to Tensorboard
-pe = PolicyMonitor(
-  env=make_env(),
-  policy_net=policy_net,
-  summary_writer=summary_writer,
-  saver=saver)
+  # Used to occasionally save videos for our policy
+  # and write rewards to Tensorboard
+  pe = PolicyMonitor(
+    env=make_env(),
+    policy_net=policy_net,
+    summary_writer=summary_writer,
+    saver=saver)
 
 with tf.Session() as sess:
   sess.run(tf.initialize_all_variables())
