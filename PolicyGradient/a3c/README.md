@@ -12,3 +12,10 @@
 ```
 
 See `./train.py --help` for a full list of options.
+
+#### Components
+
+- [`train.py`](train.y) contains the main method to start training.
+- [`estimators.py`](estimators.py) contains the Tensorflow graph definitions for the Policy and Value networks.
+- [`worker.py`](worker.py) contains code that runs in each worker threads.
+- [`policy_monitor.py`](policy_monitor.py) contains code that evaluates the policy network by running an episode and saving rewards to Tensorboard.
