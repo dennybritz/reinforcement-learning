@@ -68,8 +68,7 @@ class PolicyEstimator():
 
     with tf.variable_scope("policy_net"):
       self.logits = tf.contrib.layers.fully_connected(fc1, num_outputs, activation_fn=None)
-      self.probs = tf.nn.softmax(self.logits)
-      self.probs = tf.clip_by_value(self.probs, 1e-6, 1.0)
+      self.probs = tf.nn.softmax(self.logits) + 1e-8
 
       self.predictions = {
         "logits": self.logits,
@@ -92,7 +91,8 @@ class PolicyEstimator():
       tf.histogram_summary(self.cross_entropy.op.name, self.cross_entropy)
 
       if trainable:
-        self.optimizer = tf.train.AdamOptimizer(1e-4)
+        # self.optimizer = tf.train.AdamOptimizer(1e-4)
+        self.optimizer = tf.train.RMSPropOptimizer(0.00025, 0.99, 0.0, 1e-6)
         self.grads_and_vars = self.optimizer.compute_gradients(self.loss)
         self.grads_and_vars = [[grad, var] for grad, var in self.grads_and_vars if grad is not None]
         self.train_op = self.optimizer.apply_gradients(self.grads_and_vars,
@@ -158,7 +158,8 @@ class ValueEstimator():
       tf.histogram_summary("{}/values".format(prefix), self.logits)
 
       if trainable:
-        self.optimizer = tf.train.AdamOptimizer(1e-4)
+        # self.optimizer = tf.train.AdamOptimizer(1e-4)
+        self.optimizer = tf.train.RMSPropOptimizer(0.00025, 0.99, 0.0, 1e-6)
         self.grads_and_vars = self.optimizer.compute_gradients(self.loss)
         self.grads_and_vars = [[grad, var] for grad, var in self.grads_and_vars if grad is not None]
         self.train_op = self.optimizer.apply_gradients(self.grads_and_vars,

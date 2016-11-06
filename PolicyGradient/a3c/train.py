@@ -50,7 +50,9 @@ if FLAGS.reset:
 if not os.path.exists(CHECKPOINT_DIR):
   os.makedirs(CHECKPOINT_DIR)
 
-summary_writer = tf.train.SummaryWriter(os.path.join(MODEL_DIR, "train"))
+summary_writer = tf.train.SummaryWriter(
+  os.path.join(MODEL_DIR, "train"),
+  graph=tf.get_default_graph())
 
 with tf.device("/cpu:0"):
 
