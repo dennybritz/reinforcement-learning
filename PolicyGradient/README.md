@@ -59,4 +59,6 @@
   - [Solution](Continuous MountainCar Actor Critic Solution.ipynb)
 - Deterministic Policy Gradients for Continuous Action Spaces (WIP)
 - Deep Deterministic Policy Gradients (WIP)
-- Asynchronous Advantage Actor Critic (A3C) (WIP)
+- Asynchronous Advantage Actor Critic (A3C)
+  - Exercise
+  - [Solution](a3c/)

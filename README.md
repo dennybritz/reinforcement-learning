@@ -43,7 +43,7 @@ All code is written in Python 3 and use RL environments from [OpenAI Gym](https:
 - [Policy Gradient: Actor Critic with Baseline for Continuous Action Spaces](PolicyGradient/Continuous MountainCar Actor Critic Solution.ipynb)
 - Deterministic Policy Gradients for Continuous Action Spaces (WIP)
 - Deep Deterministic Policy Gradients (DDPG) (WIP)
-- Asynchronous Advantage Actor Critic (A3C) (WIP)
+- [Asynchronous Advantage Actor Critic (A3C)](PolicyGradient/a3c)
 
 
 ### Resources
