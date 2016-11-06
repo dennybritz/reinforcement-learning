@@ -24,7 +24,7 @@ Transition = collections.namedtuple("Transition", ["state", "action", "reward", 
 def make_copy_params_op(v1_list, v2_list):
   """
   Creates an operation that copies parameters from variable in v1_list to variables in v2_list.
-  The ordering of the variables in the list must be identical.
+  The ordering of the variables in the lists must be identical.
   """
   v1_list = list(sorted(v1_list, key=lambda v: v.name))
   v2_list = list(sorted(v2_list, key=lambda v: v.name))
@@ -38,7 +38,7 @@ def make_copy_params_op(v1_list, v2_list):
 
 def make_train_op(local_estimator, global_estimator):
   """
-  Creates an op that applies the local estimator gradients
+  Creates an op that applies local estimator gradients
   to the global estimator.
   """
   local_grads, _ = zip(*local_estimator.grads_and_vars)
@@ -181,7 +181,6 @@ class Worker(object):
       policy_targets.append(policy_target)
       value_targets.append(reward)
 
-    # Calculate the gradients
     feed_dict = {
       self.policy_net.states: np.array(states),
       self.policy_net.targets: policy_targets,
@@ -190,7 +189,7 @@ class Worker(object):
       self.value_net.targets: value_targets,
     }
 
-    # Train the global estimators
+    # Train the global estimators using local gradients
     global_step, pnet_loss, vnet_loss, _, _, pnet_summaries, vnet_summaries = sess.run([
       self.global_step,
       self.policy_net.loss,

@@ -30,7 +30,7 @@ class PolicyMonitor(object):
     policy_net: A policy estimator
     summary_writer: a tf.train.SummaryWriter used to write Tensorboard summaries
   """
-  def __init__(self, env, policy_net, summary_writer, saver):
+  def __init__(self, env, policy_net, summary_writer, saver=None):
     self.env = env
     self.global_policy_net = policy_net
     self.summary_writer = summary_writer
