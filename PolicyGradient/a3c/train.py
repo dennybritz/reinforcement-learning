@@ -1,3 +1,5 @@
+#! /usr/bin/env python
+
 import unittest
 import gym
 import sys
@@ -21,12 +23,12 @@ from estimators import ValueEstimator, PolicyEstimator
 from policy_monitor import PolicyMonitor
 from worker import Worker
 
-tf.flags.DEFINE_string("model_dir", "/tmp/a3c", "Directory to write to")
-tf.flags.DEFINE_string("env", "Breakout-v0", "Name of gym Atari environment")
+tf.flags.DEFINE_string("model_dir", "/tmp/a3c", "Directory to write Tensorboard summaries and videos to.")
+tf.flags.DEFINE_string("env", "Breakout-v0", "Name of gym Atari environment, e.g. Breakout-v0")
 tf.flags.DEFINE_integer("t_max", 5, "Number of steps before performing an update")
-tf.flags.DEFINE_integer("max_global_steps", None, "Stop after this many steps in the environment")
+tf.flags.DEFINE_integer("max_global_steps", None, "Stop training after this many steps in the environment. Defaults to running indefinitely.")
 tf.flags.DEFINE_integer("eval_every", 300, "Evaluate the policy every N seconds")
-tf.flags.DEFINE_boolean("reset", False, "If true, delete the existing model directory")
+tf.flags.DEFINE_boolean("reset", False, "If set, delete the existing model directory and start training from scratch.")
 tf.flags.DEFINE_integer("parallelism", None, "Number of threads to run. If not set we run [num_cpu_cores] threads.")
 
 FLAGS = tf.flags.FLAGS
