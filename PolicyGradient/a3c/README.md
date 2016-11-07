@@ -1,4 +1,4 @@
-## Implementation of A#C (Asynchronous Advantage Actor Critic)
+## Implementation of A3C (Asynchronous Advantage Actor Critic)
 
 #### Running
 
