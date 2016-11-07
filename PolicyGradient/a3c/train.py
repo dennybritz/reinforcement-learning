@@ -39,7 +39,7 @@ def make_env():
 # Depending on the game we may have a limited action space
 env_ = make_env()
 if FLAGS.env == "Pong-v0" or FLAGS.env == "Breakout-v0":
-  VALID_ACTIONS = range(4)
+  VALID_ACTIONS = list(range(4))
 else:
   VALID_ACTIONS = list(range(env_.action_space.n))
 env_.close()
