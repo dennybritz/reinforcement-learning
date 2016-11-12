@@ -4,7 +4,7 @@ import tensorflow as tf
 def build_shared_network(X, add_summaries=False):
   """
   Builds a 3-layer network conv -> conv -> fc as described
-  in the A3C paper. This network is shared by bother the policy and value net.
+  in the A3C paper. This network is shared by both the policy and value net.
 
   Args:
     X: Inputs
@@ -75,7 +75,7 @@ class PolicyEstimator():
         "probs": self.probs
       }
 
-      # We add cross-entropy to the loss to encourage exploration
+      # We add entropy to the loss to encourage exploration
       self.cross_entropy = -tf.reduce_sum(self.probs * tf.log(self.probs), 1, name="cross_entropy")
       self.cross_entropy_mean = tf.reduce_mean(self.cross_entropy, name="cross_entropy_mean")
 
