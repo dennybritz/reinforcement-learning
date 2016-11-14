@@ -4,7 +4,7 @@ import tensorflow as tf
 def build_shared_network(X, add_summaries=False):
   """
   Builds a 3-layer network conv -> conv -> fc as described
-  in the A3C paper. This network is shared by bother the policy and value net.
+  in the A3C paper. This network is shared by both the policy and value net.
 
   Args:
     X: Inputs
@@ -75,20 +75,20 @@ class PolicyEstimator():
         "probs": self.probs
       }
 
-      # We add cross-entropy to the loss to encourage exploration
-      self.cross_entropy = -tf.reduce_sum(self.probs * tf.log(self.probs), 1, name="cross_entropy")
-      self.cross_entropy_mean = tf.reduce_mean(self.cross_entropy, name="cross_entropy_mean")
+      # We add entropy to the loss to encourage exploration
+      self.entropy = -tf.reduce_sum(self.probs * tf.log(self.probs), 1, name="entropy")
+      self.entropy_mean = tf.reduce_mean(self.entropy, name="entropy_mean")
 
       # Get the predictions for the chosen actions only
       gather_indices = tf.range(batch_size) * tf.shape(self.probs)[1] + self.actions
       self.picked_action_probs = tf.gather(tf.reshape(self.probs, [-1]), gather_indices)
 
-      self.losses = - (tf.log(self.picked_action_probs) * self.targets + 0.01 * self.cross_entropy)
+      self.losses = - (tf.log(self.picked_action_probs) * self.targets + 0.01 * self.entropy)
       self.loss = tf.reduce_sum(self.losses, name="loss")
 
       tf.scalar_summary(self.loss.op.name, self.loss)
-      tf.scalar_summary(self.cross_entropy_mean.op.name, self.cross_entropy_mean)
-      tf.histogram_summary(self.cross_entropy.op.name, self.cross_entropy)
+      tf.scalar_summary(self.entropy_mean.op.name, self.entropy_mean)
+      tf.histogram_summary(self.entropy.op.name, self.entropy)
 
       if trainable:
         # self.optimizer = tf.train.AdamOptimizer(1e-4)
