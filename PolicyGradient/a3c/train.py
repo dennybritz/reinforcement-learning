@@ -34,8 +34,11 @@ tf.flags.DEFINE_integer("parallelism", None, "Number of threads to run. If not s
 
 FLAGS = tf.flags.FLAGS
 
-def make_env():
-  return atari_helpers.AtariEnvWrapper(gym.envs.make(FLAGS.env))
+def make_env(wrap=True):
+  env = gym.envs.make(FLAGS.env)
+  if wrap:
+    env = atari_helpers.AtariEnvWrapper(env)
+  return env
 
 # Depending on the game we may have a limited action space
 env_ = make_env()
@@ -102,7 +105,7 @@ with tf.device("/cpu:0"):
   # Used to occasionally save videos for our policy net
   # and write episode rewards to Tensorboard
   pe = PolicyMonitor(
-    env=make_env(),
+    env=make_env(wrap=False),
     policy_net=policy_net,
     summary_writer=summary_writer,
     saver=saver)
