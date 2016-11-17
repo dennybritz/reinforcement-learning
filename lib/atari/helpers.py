@@ -8,17 +8,20 @@ class AtariEnvWrapper(object):
     self.env = env
 
   def __getattr__(self, name):
-    if name == "step":
-      return self._step
-    else:
-      return getattr(self.env, name)
+    return getattr(self.env, name)
 
-  def _step(self, *args, **kwargs):
+  def step(self, *args, **kwargs):
     lives_before = self.env.ale.lives()
     next_state, reward, done, info = self.env.step(*args, **kwargs)
     lives_after = self.env.ale.lives()
+
+    # End the episode when a life is lost
     if lives_before > lives_after:
       done = True
+
+    # Clip rewards to [-1,1]
+    reward = max(min(reward, 1), -1)
+
     return next_state, reward, done, info
 
 def atari_make_initial_state(state):
