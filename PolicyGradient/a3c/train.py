@@ -18,10 +18,11 @@ import_path = os.path.abspath(os.path.join(current_path, "../.."))
 if import_path not in sys.path:
   sys.path.append(import_path)
 
-# from lib import plotting
+from lib.atari import helpers as atari_helpers
 from estimators import ValueEstimator, PolicyEstimator
 from policy_monitor import PolicyMonitor
 from worker import Worker
+
 
 tf.flags.DEFINE_string("model_dir", "/tmp/a3c", "Directory to write Tensorboard summaries and videos to.")
 tf.flags.DEFINE_string("env", "Breakout-v0", "Name of gym Atari environment, e.g. Breakout-v0")
@@ -34,7 +35,7 @@ tf.flags.DEFINE_integer("parallelism", None, "Number of threads to run. If not s
 FLAGS = tf.flags.FLAGS
 
 def make_env():
-  return gym.envs.make(FLAGS.env)
+  return atari_helpers.AtariEnvWrapper(gym.envs.make(FLAGS.env))
 
 # Depending on the game we may have a limited action space
 env_ = make_env()
