@@ -14,10 +14,10 @@ class AtariEnvWrapper(object):
       return getattr(self.env, name)
 
   def _step(self, *args, **kwargs):
-    lifes_before = self.env.ale.lives()
+    lives_before = self.env.ale.lives()
     next_state, reward, done, info = self.env.step(*args, **kwargs)
-    lifes_after = self.env.ale.lives()
-    if lifes_before > lifes_after:
+    lives_after = self.env.ale.lives()
+    if lives_before > lives_after:
       done = True
     return next_state, reward, done, info
 
