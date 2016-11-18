@@ -4,6 +4,7 @@ import numpy as np
 import os
 import random
 import sys
+import shutil
 import tensorflow as tf
 
 if "../" not in sys.path:
@@ -187,6 +188,7 @@ def deep_q_learning(sess,
                     experiment_dir,
                     replay_memory_size=500000,
                     replay_memory_init_size=50000,
+                    update_every=4,
                     update_target_estimator_every=10000,
                     discount_factor=0.99,
                     epsilon_start=1.0,
@@ -333,25 +335,29 @@ def deep_q_learning(sess,
                 replay_memory.pop(0)
 
             # Save transition to replay memory
-            replay_memory.append(Transition(state, action, reward, next_state, done))   
+            replay_memory.append(Transition(state, action, reward, next_state, done))
 
             # Update statistics
             stats.episode_rewards[i_episode] += reward
             stats.episode_lengths[i_episode] = t
 
-            # Sample a minibatch from the replay memory
-            samples = random.sample(replay_memory, batch_size)
-            states_batch, action_batch, reward_batch, next_states_batch, done_batch = map(np.array, zip(*samples))
+            total_t += 1
 
-            # Calculate q values and targets
-            q_values_next = target_estimator.predict(sess, next_states_batch)
-            targets_batch = reward_batch + np.invert(done_batch).astype(np.float32) * discount_factor * np.amax(q_values_next, axis=1)
+            if total_t % update_every == 0:
 
-            # Perform gradient descent update
-            states_batch = np.array(states_batch)
-            loss, summaries, total_t = q_estimator.update(sess, states_batch, action_batch, targets_batch)
+                # Sample a minibatch from the replay memory
+                samples = random.sample(replay_memory, batch_size)
+                states_batch, action_batch, reward_batch, next_states_batch, done_batch = map(np.array, zip(*samples))
 
-            summary_writer.add_summary(summaries, total_t)
+                # Calculate q values and targets
+                q_values_next = target_estimator.predict(sess, next_states_batch)
+                targets_batch = reward_batch + np.invert(done_batch).astype(np.float32) * discount_factor * np.amax(q_values_next, axis=1)
+
+                # Perform gradient descent update
+                states_batch = np.array(states_batch)
+                loss, summaries, _ = q_estimator.update(sess, states_batch, action_batch, targets_batch)
+
+                summary_writer.add_summary(summaries, total_t)
 
             if done:
                 break

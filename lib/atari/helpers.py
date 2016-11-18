@@ -4,8 +4,9 @@ class AtariEnvWrapper(object):
   """
   Wraps an Atari environment to end an episode when a life is lost.
   """
-  def __init__(self, env):
+  def __init__(self, env, clip=True):
     self.env = env
+    self.clip = clip
 
   def __getattr__(self, name):
     return getattr(self.env, name)
@@ -20,7 +21,8 @@ class AtariEnvWrapper(object):
       done = True
 
     # Clip rewards to [-1,1]
-    # reward = max(min(reward, 1), -1)
+    if self.clip:
+      reward = np.clip(reward, -1, 1)
 
     return next_state, reward, done, info
 
