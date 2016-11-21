@@ -17,9 +17,9 @@
 - Sometimes the policy is easier to approximate than the value function. Also, we need a parameterized policy to deal with continuous action spaces and environments where we need to act stochastically.
 - Policy Score Function `J(theta)`: Intuitively, it measures how good our policy is. For example, we can use the average value or average reward under a policy as our objective.
 - Common choices for the policy function: Softmax for discrete actions, Gaussian parameters for continuous actions.
-- Policy Gradient Theorem: `grad(J(theta)) = Ex[grad(log(pi(s, a))) * Q(s, a)]`. Basically, we move our policy in a direction of more reward.
-- REINFORCE (Monte Carlo Policy Gradient): We substitute a samples return `g_t` from an episode for Q(s, a) to make an update. Unbiased but high variance.
-- Baseline: Instead of measuring the absolute goodness of an action we want to know how much better than "average" it is to take an action given a state. E.g. some states are naturally bad and always give the negative reward. This is called the advantage and is defined as `Q(s, a) - V(s)`. We use that for our policy update, e.g. `g_t - V(s)` for REINFORCE.
+- Policy Gradient Theorem: `grad(J(theta)) = Ex[grad(log(pi(s, a))) * Q(s, a)]`. Basically, we move our policy into a direction of more reward.
+- REINFORCE (Monte Carlo Policy Gradient): We substitute a samples return `g_t` form an episode for Q(s, a) to make an update. Unbiased but high variance.
+- Baseline: Instead of measuring the absolute goodness of an action we want to know how much better than "average" it is to take an action given a state. E.g. some states are naturally bad and always give negative reward. This is called the advantage and is defined as `Q(s, a) - V(s)`. We use that for our policy update, e.g. `g_t - V(s)` for REINFORCE.
 - Actor-Critic: Instead of waiting until the end of an episode as in REINFORCE we use bootstrapping and make an update at each step. To do that we also train a Critic Q(theta) that approximates the value function. Now we have two function approximators: One of the policy, one for the critic. This is basically TD, but for Policy Gradients.
 - A good estimate of the advantage function in the Actor-Critic algorithm is the td error. Our update then becomes `grad(J(theta)) = Ex[grad(log(pi(s, a))) * td_error]`.
 - Can use policy gradients with td-lambda, eligibility traces, and so on.
