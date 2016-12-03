@@ -164,7 +164,7 @@ class Worker(object):
     # If we episode was not done we bootstrap the value from the last state
     reward = 0.0
     if not transitions[-1].done:
-      reward = self._value_net_predict(transitions[-1].state, sess)
+      reward = self._value_net_predict(transitions[-1].next_state, sess)
 
     # Accumulate minibatch exmaples
     states = []
