@@ -125,7 +125,6 @@ class ValueEstimator():
     self.targets = tf.placeholder(shape=[None], dtype=tf.float32, name="y")
 
     X = tf.to_float(self.states) / 255.0
-    batch_size = tf.shape(self.states)[0]
 
     # Graph shared with Value Net
     with tf.variable_scope("shared", reuse=reuse):
