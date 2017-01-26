@@ -86,9 +86,9 @@ class PolicyEstimator():
       self.losses = - (tf.log(self.picked_action_probs) * self.targets + 0.01 * self.entropy)
       self.loss = tf.reduce_sum(self.losses, name="loss")
 
-      tf.scalar_summary(self.loss.op.name, self.loss)
-      tf.scalar_summary(self.entropy_mean.op.name, self.entropy_mean)
-      tf.histogram_summary(self.entropy.op.name, self.entropy)
+      tf.summary.scalar(self.loss.op.name, self.loss)
+      tf.summary.scalar(self.entropy_mean.op.name, self.entropy_mean)
+      tf.summary.histogram(self.entropy.op.name, self.entropy)
 
       if trainable:
         # self.optimizer = tf.train.AdamOptimizer(1e-4)
@@ -103,7 +103,7 @@ class PolicyEstimator():
     summary_ops = tf.get_collection(tf.GraphKeys.SUMMARIES)
     sumaries = [s for s in summary_ops if "policy_net" in s.name or "shared" in s.name]
     sumaries = [s for s in summary_ops if var_scope_name in s.name]
-    self.summaries = tf.merge_summary(sumaries)
+    self.summaries = tf.summary.merge(sumaries)
 
 
 class ValueEstimator():
@@ -146,15 +146,15 @@ class ValueEstimator():
 
       # Summaries
       prefix = tf.get_variable_scope().name
-      tf.scalar_summary(self.loss.name, self.loss)
-      tf.scalar_summary("{}/max_value".format(prefix), tf.reduce_max(self.logits))
-      tf.scalar_summary("{}/min_value".format(prefix), tf.reduce_min(self.logits))
-      tf.scalar_summary("{}/mean_value".format(prefix), tf.reduce_mean(self.logits))
-      tf.scalar_summary("{}/reward_max".format(prefix), tf.reduce_max(self.targets))
-      tf.scalar_summary("{}/reward_min".format(prefix), tf.reduce_min(self.targets))
-      tf.scalar_summary("{}/reward_mean".format(prefix), tf.reduce_mean(self.targets))
-      tf.histogram_summary("{}/reward_targets".format(prefix), self.targets)
-      tf.histogram_summary("{}/values".format(prefix), self.logits)
+      tf.summary.scalar(self.loss.name, self.loss)
+      tf.summary.scalar("{}/max_value".format(prefix), tf.reduce_max(self.logits))
+      tf.summary.scalar("{}/min_value".format(prefix), tf.reduce_min(self.logits))
+      tf.summary.scalar("{}/mean_value".format(prefix), tf.reduce_mean(self.logits))
+      tf.summary.scalar("{}/reward_max".format(prefix), tf.reduce_max(self.targets))
+      tf.summary.scalar("{}/reward_min".format(prefix), tf.reduce_min(self.targets))
+      tf.summary.scalar("{}/reward_mean".format(prefix), tf.reduce_mean(self.targets))
+      tf.summary.histogram("{}/reward_targets".format(prefix), self.targets)
+      tf.summary.histogram("{}/values".format(prefix), self.logits)
 
       if trainable:
         # self.optimizer = tf.train.AdamOptimizer(1e-4)
@@ -168,4 +168,4 @@ class ValueEstimator():
     summary_ops = tf.get_collection(tf.GraphKeys.SUMMARIES)
     sumaries = [s for s in summary_ops if "policy_net" in s.name or "shared" in s.name]
     sumaries = [s for s in summary_ops if var_scope_name in s.name]
-    self.summaries = tf.merge_summary(sumaries)
+    self.summaries = tf.summary.merge(sumaries)
