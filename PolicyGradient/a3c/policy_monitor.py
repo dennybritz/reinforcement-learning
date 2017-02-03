@@ -1,4 +1,3 @@
-import gym
 import sys
 import os
 import itertools
@@ -13,6 +12,9 @@ import_path = os.path.abspath(os.path.join(current_path, "../.."))
 
 if import_path not in sys.path:
   sys.path.append(import_path)
+
+from gym.wrappers import Monitor
+import gym
 
 from lib.atari.state_processor import StateProcessor
 from lib.atari import helpers as atari_helpers
@@ -31,14 +33,16 @@ class PolicyMonitor(object):
     summary_writer: a tf.train.SummaryWriter used to write Tensorboard summaries
   """
   def __init__(self, env, policy_net, summary_writer, saver=None):
-    self.env = env
+
+    self.video_dir = os.path.join(summary_writer.get_logdir(), "../videos")
+    self.video_dir = os.path.abspath(self.video_dir)
+
+    self.env = Monitor(env, directory=self.video_dir, video_callable=lambda x: True, resume=True)
     self.global_policy_net = policy_net
     self.summary_writer = summary_writer
     self.saver = saver
     self.sp = StateProcessor()
 
-    self.video_dir = os.path.join(summary_writer.get_logdir(), "../videos")
-    self.video_dir = os.path.abspath(self.video_dir)
     self.checkpoint_path = os.path.abspath(os.path.join(summary_writer.get_logdir(), "../checkpoints/model"))
 
     try:
@@ -54,9 +58,6 @@ class PolicyMonitor(object):
     self.copy_params_op = make_copy_params_op(
       tf.contrib.slim.get_variables(scope="global", collection=tf.GraphKeys.TRAINABLE_VARIABLES),
       tf.contrib.slim.get_variables(scope="policy_eval", collection=tf.GraphKeys.TRAINABLE_VARIABLES))
-
-    # Enable monitoring
-    self.env.monitor.start(directory=self.video_dir, video_callable=lambda x: True, resume=True)
 
   def _policy_net_predict(self, state, sess):
     feed_dict = { self.policy_net.states: [state] }
