@@ -36,6 +36,8 @@ FLAGS = tf.flags.FLAGS
 
 def make_env(wrap=True):
   env = gym.envs.make(FLAGS.env)
+  # remove the timelimitwrapper
+  env = env.env
   if wrap:
     env = atari_helpers.AtariEnvWrapper(env)
   return env
