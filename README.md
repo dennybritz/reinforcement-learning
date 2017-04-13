@@ -50,7 +50,7 @@ All code is written in Python 3 and uses RL environments from [OpenAI Gym](https
 
 Textbooks:
 
-- [Reinforcement Learning: An Introduction (2nd Edition)](https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf)
+- [Reinforcement Learning: An Introduction (2nd Edition)](http://incompleteideas.net/sutton/book/bookdraft2016sep.pdf)
 
 Classes:
 
