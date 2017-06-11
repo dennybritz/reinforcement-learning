@@ -14,7 +14,7 @@
 - Treat RL as supervised learning problem with the MC- or TD-target as the label and the current state/action as the input. Often the target also depends on the function estimator but we simply ignore its gradient. That's why these methods are called semi-gradient methods.
 - Challenge: We have non-stationary (policy changes, bootstrapping) and non-iid (correlated in time) data.
 - Many methods assume that our action space is discrete because they rely on calculating the argmax over all actions. Large and continuous action spaces are ongoing research.
-- For Control very few convergence guarantees exist. For non-linear approximators there are basically no guarantees at all. But in works in practice.
+- For Control very few convergence guarantees exist. For non-linear approximators there are basically no guarantees at all. But they tend to work in practice.
 - Experience Replay: Store experience as dataset, randomize it, and repeatedly apply minibatch SGD.
 - Tricks to stabilize non-linear function approximators: Fixed Targets. The target is calculated based on frozen parameter values from a previous time step.
 - For the non-episodic (continuing) case function approximation is more complex and we need to give up discounting and use an "average reward" formulation.

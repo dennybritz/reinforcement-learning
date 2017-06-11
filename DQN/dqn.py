@@ -278,7 +278,7 @@ def deep_q_learning(sess,
     state = state_processor.process(sess, state)
     state = np.stack([state] * 4, axis=2)
     for i in range(replay_memory_init_size):
-        action_probs = policy(sess, state, epsilons[total_t])
+        action_probs = policy(sess, state, epsilons[min(total_t, epsilon_decay_steps-1)])
         action = np.random.choice(np.arange(len(action_probs)), p=action_probs)
         next_state, reward, done, _ = env.step(VALID_ACTIONS[action])
         next_state = state_processor.process(sess, next_state)
@@ -416,3 +416,4 @@ with tf.Session() as sess:
                                     batch_size=32):
 
         print("\nEpisode Reward: {}".format(stats.episode_rewards[-1]))
+

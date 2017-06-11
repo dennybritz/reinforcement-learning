@@ -5,9 +5,9 @@ This repository provides code, exercises and solutions for popular Reinforcement
 - [Reinforcement Learning: An Introduction (2nd Edition)](http://incompleteideas.net/sutton/book/bookdraft2017june.pdf)
 - [David Silver's Reinforcement Learning Course](http://www0.cs.ucl.ac.uk/staff/d.silver/web/Teaching.html)
 
-Each folder in corresponds to one or more chapters of the above textbook and/or course. In addition to exercises and solution each folder also contains a list of learning goals, a brief concept summary, and links to the relevant readings.
+Each folder in corresponds to one or more chapters of the above textbook and/or course. In addition to exercises and solution, each folder also contains a list of learning goals, a brief concept summary, and links to the relevant readings.
 
-All code is written in Python 3 and use RL environments from [OpenAI Gym](https://gym.openai.com/). Advanced techniques use [Tensorflow](tensorflow.org/) for neural network implementations.
+All code is written in Python 3 and uses RL environments from [OpenAI Gym](https://gym.openai.com/). Advanced techniques use [Tensorflow](https://www.tensorflow.org/) for neural network implementations.
 
 
 ### Table of Contents
@@ -43,7 +43,7 @@ All code is written in Python 3 and use RL environments from [OpenAI Gym](https:
 - [Policy Gradient: Actor Critic with Baseline for Continuous Action Spaces](PolicyGradient/Continuous MountainCar Actor Critic Solution.ipynb)
 - Deterministic Policy Gradients for Continuous Action Spaces (WIP)
 - Deep Deterministic Policy Gradients (DDPG) (WIP)
-- Asynchronous Advantage Actor Critic (A3C) (WIP)
+- [Asynchronous Advantage Actor Critic (A3C)](PolicyGradient/a3c)
 
 
 ### Resources
@@ -65,6 +65,7 @@ Talks/Tutorials:
 - [Deep Reinforcement Learning ICML 2016 Tutorial (David Silver)](http://techtalks.tv/talks/deep-reinforcement-learning/62360/)
 - [Tutorial: Introduction to Reinforcement Learning with Function Approximation](https://www.youtube.com/watch?v=ggqnxyjaKe4)
 - [John Schulman - Deep Reinforcement Learning (4 Lectures)](https://www.youtube.com/playlist?list=PLjKEIQlKCTZYN3CYBlj8r58SbNorobqcp)
+- [Deep Reinforcement Learning Slides @ NIPS 2016](http://people.eecs.berkeley.edu/~pabbeel/nips-tutorial-policy-optimization-Schulman-Abbeel.pdf)
 
 Other Projects:
 
