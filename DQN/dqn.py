@@ -230,7 +230,8 @@ def deep_q_learning(sess,
                     epsilon_end=0.1,
                     epsilon_decay_steps=500000,
                     batch_size=32,
-                    record_video_every=100000):
+                    record_video_every=100000,
+                    render=False):
     """
     Q-Learning algorithm for fff-policy TD control using Function Approximation.
     Finds the optimal greedy policy while following an epsilon-greedy policy.
@@ -282,7 +283,9 @@ def deep_q_learning(sess,
 
     saver = tf.train.Saver()
     # Load a previous checkpoint if we find one
-    latest_checkpoint = tf.train.latest_checkpoint(checkpoint_dir)
+    #latest_checkpoint = tf.train.latest_checkpoint(checkpoint_dir)
+    print(checkpoint_dir)
+    latest_checkpoint = tf.train.latest_checkpoint("./experiments/Breakout-v0/checkpoints")
     if latest_checkpoint:
         print("Loading model checkpoint {}...\n".format(latest_checkpoint))
         saver.restore(sess, latest_checkpoint)
@@ -337,7 +340,8 @@ def deep_q_learning(sess,
 
         # One step in the environment
         for t in itertools.count():
-
+            if render:
+                env.render()
             # Epsilon for this time step
             epsilon = epsilons[min(total_t, epsilon_decay_steps-1)]
 
@@ -413,7 +417,7 @@ def deep_q_learning(sess,
 tf.reset_default_graph()
 
 # Where we save our checkpoints and graphs
-experiment_dir = os.path.abspath("./experiments/{}".format(env.spec.id))
+experiment_dir = os.path.dirname("./experiments/{}/".format(env.spec.id))
 
 # Create a glboal step variable
 global_step = tf.Variable(0, name='global_step', trainable=False)
@@ -458,12 +462,14 @@ else:
                                         experiment_dir=experiment_dir,
                                         num_episodes=10000,
                                         replay_memory_size=500000,
-                                        replay_memory_init_size=50000,
+                                        replay_memory_init_size=500,
                                         update_target_estimator_every=10000,
                                         epsilon_start=0.05,
                                         epsilon_end=0.05,
                                         epsilon_decay_steps=500000,
                                         discount_factor=0.99,
-                                        batch_size=32):
+                                        batch_size=32,
+                                        record_video_every=100,
+                                        render=False):
 
             print("\nEpisode Reward: {}".format(stats.episode_rewards[-1]))
