@@ -283,9 +283,7 @@ def deep_q_learning(sess,
 
     saver = tf.train.Saver()
     # Load a previous checkpoint if we find one
-    #latest_checkpoint = tf.train.latest_checkpoint(checkpoint_dir)
-    print(checkpoint_dir)
-    latest_checkpoint = tf.train.latest_checkpoint("./experiments/Breakout-v0/checkpoints")
+    latest_checkpoint = tf.train.latest_checkpoint(checkpoint_dir)
     if latest_checkpoint:
         print("Loading model checkpoint {}...\n".format(latest_checkpoint))
         saver.restore(sess, latest_checkpoint)
@@ -470,6 +468,6 @@ else:
                                         discount_factor=0.99,
                                         batch_size=32,
                                         record_video_every=100,
-                                        render=False):
+                                        render=True):
 
             print("\nEpisode Reward: {}".format(stats.episode_rewards[-1]))
