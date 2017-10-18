@@ -5,14 +5,39 @@ import os
 import random
 import sys
 import tensorflow as tf
+import cv2
 
 if "../" not in sys.path:
   sys.path.append("../")
 
 from lib import plotting
 from collections import deque, namedtuple
+from gym.wrappers import Monitor
 
-env = gym.envs.make("Breakout-v0")
+#added arguments
+if len(sys.argv) < 3:
+    print("Usage python dqn.py -train -run <GAME_NUM 1/2/3/4>")
+    exit(1)
+
+trainBool = False
+game_dict = {1: "Breakout-v0", 2: "Pong-v0", 3: "SpaceInvaders-v0", 4: "MsPacman-v0"}
+
+string = sys.argv[1]
+
+if string == '-train':
+    trainBool = True
+elif string == '-run':
+    pass
+else:
+    print("Usage python dqn.py -train -run <GAME_NUM 1/2/3/4>")
+    exit(1)
+
+game_num = int(sys.argv[2])
+if game_num > 4 or game_num < 1:
+    print("Usage python dqn.py -train -run <GAME_NUM 1/2/3/4>")
+    exit(1)
+
+env = gym.envs.make(game_dict[game_num])
 
 # Atari Actions: 0 (noop), 1 (fire), 2 (left) and 3 (right) are valid actions
 VALID_ACTIONS = [0, 1, 2, 3]
@@ -198,14 +223,15 @@ def deep_q_learning(sess,
                     num_episodes,
                     experiment_dir,
                     replay_memory_size=500000,
-                    replay_memory_init_size=50000,
+                    # replay_memory_init_size=50000,
+                    replay_memory_init_size=500,
                     update_target_estimator_every=10000,
                     discount_factor=0.99,
                     epsilon_start=1.0,
                     epsilon_end=0.1,
                     epsilon_decay_steps=500000,
                     batch_size=32,
-                    record_video_every=50):
+                    record_video_every=100000):
     """
     Q-Learning algorithm for fff-policy TD control using Function Approximation.
     Finds the optimal greedy policy while following an epsilon-greedy policy.
@@ -292,9 +318,12 @@ def deep_q_learning(sess,
             state = next_state
 
     # Record videos
-    env.monitor.start(monitor_path,
-                      resume=True,
-                      video_callable=lambda count: count % record_video_every == 0)
+    # env.monitor.start(monitor_path,
+    #                   resume=True,
+    #                   video_callable=lambda count: count % record_video_every == 0)
+    env = Monitor(directory=monitor_path,
+                  resume=True,
+                  video_callable=lambda count: count % record_video_every == 0, env = env)
 
     for i_episode in range(num_episodes):
 
@@ -397,23 +426,45 @@ target_estimator = Estimator(scope="target_q")
 # State processor
 state_processor = StateProcessor()
 
-with tf.Session() as sess:
-    sess.run(tf.global_variables_initializer())
-    for t, stats in deep_q_learning(sess,
-                                    env,
-                                    q_estimator=q_estimator,
-                                    target_estimator=target_estimator,
-                                    state_processor=state_processor,
-                                    experiment_dir=experiment_dir,
-                                    num_episodes=10000,
-                                    replay_memory_size=500000,
-                                    replay_memory_init_size=50000,
-                                    update_target_estimator_every=10000,
-                                    epsilon_start=1.0,
-                                    epsilon_end=0.1,
-                                    epsilon_decay_steps=500000,
-                                    discount_factor=0.99,
-                                    batch_size=32):
+# training step
+if trainBool:
+    with tf.Session() as sess:
+        sess.run(tf.global_variables_initializer())
+        for t, stats in deep_q_learning(sess,
+                                        env,
+                                        q_estimator=q_estimator,
+                                        target_estimator=target_estimator,
+                                        state_processor=state_processor,
+                                        experiment_dir=experiment_dir,
+                                        num_episodes=10000,
+                                        replay_memory_size=500000,
+                                        replay_memory_init_size=50000,
+                                        update_target_estimator_every=10000,
+                                        epsilon_start=1.0,
+                                        epsilon_end=0.1,
+                                        epsilon_decay_steps=500000,
+                                        discount_factor=0.99,
+                                        batch_size=32):
 
-        print("\nEpisode Reward: {}".format(stats.episode_rewards[-1]))
+            print("\nEpisode Reward: {}".format(stats.episode_rewards[-1]))
+else:
+    # in order to run as specified by the paper changed the episolon_start to 0.05
+    with tf.Session() as sess:
+        sess.run(tf.global_variables_initializer())
+        for t, stats in deep_q_learning(sess,
+                                        env,
+                                        q_estimator=q_estimator,
+                                        target_estimator=target_estimator,
+                                        state_processor=state_processor,
+                                        experiment_dir=experiment_dir,
+                                        num_episodes=10000,
+                                        replay_memory_size=500000,
+                                        replay_memory_init_size=50000,
+                                        update_target_estimator_every=10000,
+                                        epsilon_start=0.05,
+                                        epsilon_end=0.05,
+                                        epsilon_decay_steps=500000,
+                                        discount_factor=0.99,
+                                        batch_size=32):
 
+            print("\nEpisode Reward: {}".format(stats.episode_rewards[-1]))
