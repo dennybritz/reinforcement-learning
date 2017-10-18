@@ -103,7 +103,7 @@ class Estimator():
         self.train_op = self.optimizer.minimize(self.loss, global_step=tf.contrib.framework.get_global_step())
 
         # Summaries for Tensorboard
-        self.summaries = tf.merge_summary([
+        self.summaries = tf.summary.merge([
             tf.scalar_summary("loss", self.loss),
             tf.histogram_summary("loss_hist", self.losses),
             tf.histogram_summary("q_values_hist", self.predictions),
