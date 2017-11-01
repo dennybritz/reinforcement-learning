@@ -1,4 +1,5 @@
 import gym
+form gym.wrappers import Monitor
 import itertools
 import numpy as np
 import os
@@ -28,7 +29,7 @@ class StateProcessor():
             self.output = tf.image.rgb_to_grayscale(self.input_state)
             self.output = tf.image.crop_to_bounding_box(self.output, 34, 0, 160, 160)
             self.output = tf.image.resize_images(
-                self.output, 84, 84, method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
+                self.output, [84, 84], method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
             self.output = tf.squeeze(self.output)
 
     def process(self, sess, state):
@@ -292,9 +293,11 @@ def deep_q_learning(sess,
             state = next_state
 
     # Record videos
-    env.monitor.start(monitor_path,
-                      resume=True,
-                      video_callable=lambda count: count % record_video_every == 0)
+    # Use the gym env Monitor wrapper
+    env = Monitor(env,
+                  directory=monitor_path,
+                  resume=True,
+                  video_callable=lambda count: count % record_video_every ==0)
 
     for i_episode in range(num_episodes):
 
