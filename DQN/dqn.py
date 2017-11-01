@@ -60,7 +60,7 @@ class Estimator():
                 summary_dir = os.path.join(summaries_dir, "summaries_{}".format(scope))
                 if not os.path.exists(summary_dir):
                     os.makedirs(summary_dir)
-                self.summary_writer = tf.train.SummaryWriter(summary_dir)
+                self.summary_writer = tf.summary.FileWriter(summary_dir)
 
     def _build_model(self):
         """
@@ -104,11 +104,11 @@ class Estimator():
         self.train_op = self.optimizer.minimize(self.loss, global_step=tf.contrib.framework.get_global_step())
 
         # Summaries for Tensorboard
-        self.summaries = tf.merge_summary([
-            tf.scalar_summary("loss", self.loss),
-            tf.histogram_summary("loss_hist", self.losses),
-            tf.histogram_summary("q_values_hist", self.predictions),
-            tf.scalar_summary("max_q_value", tf.reduce_max(self.predictions))
+        self.summaries = tf.summary.merge([
+            tf.summary.scalar("loss", self.loss),
+            tf.summary.histogram("loss_hist", self.losses),
+            tf.summary.histogram("q_values_hist", self.predictions),
+            tf.summary.scalar("max_q_value", tf.reduce_max(self.predictions))
         ])
 
 
@@ -401,7 +401,7 @@ target_estimator = Estimator(scope="target_q")
 state_processor = StateProcessor()
 
 with tf.Session() as sess:
-    sess.run(tf.initialize_all_variables())
+    sess.run(tf.global_variables_initializer())
     for t, stats in deep_q_learning(sess,
                                     env,
                                     q_estimator=q_estimator,
