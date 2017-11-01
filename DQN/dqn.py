@@ -1,5 +1,5 @@
 import gym
-form gym.wrappers import Monitor
+from gym.wrappers import Monitor
 import itertools
 import numpy as np
 import os
