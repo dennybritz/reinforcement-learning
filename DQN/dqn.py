@@ -1,4 +1,5 @@
 import gym
+from gym.wrappers import Monitor
 import itertools
 import numpy as np
 import os
@@ -28,7 +29,7 @@ class StateProcessor():
             self.output = tf.image.rgb_to_grayscale(self.input_state)
             self.output = tf.image.crop_to_bounding_box(self.output, 34, 0, 160, 160)
             self.output = tf.image.resize_images(
-                self.output, 84, 84, method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
+                self.output, [84, 84], method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
             self.output = tf.squeeze(self.output)
 
     def process(self, sess, state):
@@ -59,7 +60,7 @@ class Estimator():
                 summary_dir = os.path.join(summaries_dir, "summaries_{}".format(scope))
                 if not os.path.exists(summary_dir):
                     os.makedirs(summary_dir)
-                self.summary_writer = tf.train.SummaryWriter(summary_dir)
+                self.summary_writer = tf.summary.FileWriter(summary_dir)
 
     def _build_model(self):
         """
@@ -103,11 +104,11 @@ class Estimator():
         self.train_op = self.optimizer.minimize(self.loss, global_step=tf.contrib.framework.get_global_step())
 
         # Summaries for Tensorboard
-        self.summaries = tf.merge_summary([
-            tf.scalar_summary("loss", self.loss),
-            tf.histogram_summary("loss_hist", self.losses),
-            tf.histogram_summary("q_values_hist", self.predictions),
-            tf.scalar_summary("max_q_value", tf.reduce_max(self.predictions))
+        self.summaries = tf.summary.merge([
+            tf.summary.scalar("loss", self.loss),
+            tf.summary.histogram("loss_hist", self.losses),
+            tf.summary.histogram("q_values_hist", self.predictions),
+            tf.summary.scalar("max_q_value", tf.reduce_max(self.predictions))
         ])
 
 
@@ -292,9 +293,11 @@ def deep_q_learning(sess,
             state = next_state
 
     # Record videos
-    env.monitor.start(monitor_path,
-                      resume=True,
-                      video_callable=lambda count: count % record_video_every == 0)
+    # Use the gym env Monitor wrapper
+    env = Monitor(env,
+                  directory=monitor_path,
+                  resume=True,
+                  video_callable=lambda count: count % record_video_every ==0)
 
     for i_episode in range(num_episodes):
 
@@ -398,7 +401,7 @@ target_estimator = Estimator(scope="target_q")
 state_processor = StateProcessor()
 
 with tf.Session() as sess:
-    sess.run(tf.initialize_all_variables())
+    sess.run(tf.global_variables_initializer())
     for t, stats in deep_q_learning(sess,
                                     env,
                                     q_estimator=q_estimator,
