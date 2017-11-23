@@ -37,13 +37,13 @@
 
 ### Exercises
 
-- [Get familiar with the Blackjack environment (Blackjack-v0)](Blackjack Playground.ipynb)
+- [Get familiar with the Blackjack environment (Blackjack-v0)](Blackjack%20Playground.ipynb)
 - Implement the Monte Carlo Prediction to estimate state-action values
-  - [Exercise](MC Prediction.ipynb)
-  - [Solution](MC Prediction Solution.ipynb)
+  - [Exercise](MC%20Prediction.ipynb)
+  - [Solution](MC%20Prediction%20Solution.ipynb)
 - Implement the on-policy first-visit Monte Carlo Control algorithm
-  - [Exercise](MC Control with Epsilon-Greedy Policies.ipynb)
-  - [Solution](MC Control with Epsilon-Greedy Policies Solution.ipynb)
+  - [Exercise](MC%20Control%20with%20Epsilon-Greedy%20Policies.ipynb)
+  - [Solution](MC%20Control%20with%20Epsilon-Greedy%20Policies%20Solution.ipynb)
 - Implement the off-policy every-visit Monte Carlo Control using Weighted Important Sampling algorithm
-  - [Exercise](Off-Policy MC Control with Weighted Importance Sampling.ipynb)
-  - [Solution](Off-Policy MC Control with Weighted Importance Sampling Solution.ipynb)
+  - [Exercise](Off-Policy%20MC%20Control%20with%20Weighted%20Importance%20Sampling.ipynb)
+  - [Solution](Off-Policy%20MC%20Control%20with%20Weighted%20Importance%20Sampling%20Solution.ipynb)
