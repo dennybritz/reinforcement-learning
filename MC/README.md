@@ -37,7 +37,7 @@
 
 ### Exercises
 
-- [Get familiar with the Blackjack environment (Blackjack-v0)](Blackjack%20Playground.ipynb)
+- Get familiar with the [Blackjack environment (Blackjack-v0)](Blackjack%20Playground.ipynb)
 - Implement the Monte Carlo Prediction to estimate state-action values
   - [Exercise](MC%20Prediction.ipynb)
   - [Solution](MC%20Prediction%20Solution.ipynb)

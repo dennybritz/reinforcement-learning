@@ -40,11 +40,11 @@
 
 ### Exercises
 
-- [Windy Gridworld Playground](Windy%20Gridworld%20Playground.ipynb)
+- Get familiar with the [Windy Gridworld Playground](Windy%20Gridworld%20Playground.ipynb)
 - Implement SARSA
   - [Exercise](SARSA.ipynb)
   - [Solution](SARSA%20Solution.ipynb)
-- [Cliff Environment Playground](Cliff%20Environment%20Playground.ipynb)
+- Get familiar with the [Cliff Environment Playground](Cliff%20Environment%20Playground.ipynb)
 - Implement Q-Learning in Python
   - [Exercise](Q-Learning.ipynb)
   - [Solution](Q-Learning%20Solution.ipynb)
