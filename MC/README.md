@@ -26,7 +26,7 @@
 
 **Required:**
 
-- [Reinforcement Learning: An Introduction](http://incompleteideas.net/sutton/book/bookdraft2017june.pdf) - Chapter 5: Monte Carlo Methods
+- [Reinforcement Learning: An Introduction](http://incompleteideas.net/book/bookdraft2017nov5.pdf) - Chapter 5: Monte Carlo Methods
 
 
 **Optional:**

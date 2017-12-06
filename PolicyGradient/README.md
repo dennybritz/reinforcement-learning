@@ -36,7 +36,7 @@
 
 **Optional:**
 
-- [Reinforcement Learning: An Introduction](http://incompleteideas.net/sutton/book/bookdraft2017june.pdf) - Chapter 11: Policy Gradient Methods (Under Construction)
+- [Reinforcement Learning: An Introduction](http://incompleteideas.net/book/bookdraft2017nov5.pdf) - Chapter 11: Policy Gradient Methods (Under Construction)
 - [Deterministic Policy Gradient Algorithms](http://jmlr.org/proceedings/papers/v32/silver14.pdf)
 - [Deterministic Policy Gradient Algorithms (Talk)](http://techtalks.tv/talks/deterministic-policy-gradient-algorithms/61098/)
 - [Continuous control with deep reinforcement learning](https://arxiv.org/abs/1509.02971)
