@@ -53,10 +53,10 @@
   - [Solution](CliffWalk%20REINFORCE%20with%20Baseline%20Solution.ipynb)
 - Actor-Critic with Baseline
   - Exercise
-  - [Solution](CliffWalk%20Actor-Critic%20Solution.ipynb)
+  - [Solution](CliffWalk%20Actor%20Critic%20Solution.ipynb)
 - Actor-Critic with Baseline for Continuous Action Spaces
   - Exercise
-  - [Solution](Continuous%20MountainCar%20Actor-Critic%20Solution.ipynb)
+  - [Solution](Continuous%20MountainCar%20Actor%20Critic%20Solution.ipynb)
 - Deterministic Policy Gradients for Continuous Action Spaces (WIP)
 - Deep Deterministic Policy Gradients (WIP)
 - Asynchronous Advantage Actor-Critic (A3C)
