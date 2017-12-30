@@ -36,13 +36,13 @@
 
 **Optional:**
 
-- [Reinforcement Learning: An Introduction](http://incompleteideas.net/book/bookdraft2017nov5.pdf) - Chapter 11: Policy Gradient Methods (Under Construction)
+- [Reinforcement Learning: An Introduction](http://incompleteideas.net/book/bookdraft2017nov5.pdf) - Chapter 13: Policy Gradient Methods
 - [Deterministic Policy Gradient Algorithms](http://jmlr.org/proceedings/papers/v32/silver14.pdf)
 - [Deterministic Policy Gradient Algorithms (Talk)](http://techtalks.tv/talks/deterministic-policy-gradient-algorithms/61098/)
 - [Continuous control with deep reinforcement learning](https://arxiv.org/abs/1509.02971)
 - [Deep Deterministic Policy Gradients in TensorFlow](http://pemami4911.github.io/blog_posts/2016/08/21/ddpg-rl.html)
 - [Asynchronous Methods for Deep Reinforcement Learning](https://arxiv.org/abs/1602.01783)
-- [Deep Reinforcement Learning: A Tutorial (Policy Gradient Section)](https://gym.openai.com/docs/rl#policy-gradients)
+- [Deep Reinforcement Learning: A Tutorial (Policy Gradient Section)](http://web.archive.org/web/20161029135055/https://gym.openai.com/docs/rl#id16)
 
 
 
@@ -53,10 +53,10 @@
   - [Solution](CliffWalk%20REINFORCE%20with%20Baseline%20Solution.ipynb)
 - Actor-Critic with Baseline
   - Exercise
-  - [Solution](CliffWalk%20Actor-Critic%20Solution.ipynb)
+  - [Solution](CliffWalk%20Actor%20Critic%20Solution.ipynb)
 - Actor-Critic with Baseline for Continuous Action Spaces
   - Exercise
-  - [Solution](Continuous%20MountainCar%20Actor-Critic%20Solution.ipynb)
+  - [Solution](Continuous%20MountainCar%20Actor%20Critic%20Solution.ipynb)
 - Deterministic Policy Gradients for Continuous Action Spaces (WIP)
 - Deep Deterministic Policy Gradients (WIP)
 - Asynchronous Advantage Actor-Critic (A3C)
