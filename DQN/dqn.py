@@ -39,7 +39,7 @@ class StateProcessor():
             state: A [210, 160, 3] Atari RGB State
 
         Returns:
-            A processed [84, 84, 1] state representing grayscale values.
+            A processed [84, 84] state representing grayscale values.
         """
         return sess.run(self.output, { self.input_state: state })
 
@@ -95,7 +95,7 @@ class Estimator():
         gather_indices = tf.range(batch_size) * tf.shape(self.predictions)[1] + self.actions_pl
         self.action_predictions = tf.gather(tf.reshape(self.predictions, [-1]), gather_indices)
 
-        # Calcualte the loss
+        # Calculate the loss
         self.losses = tf.squared_difference(self.y_pl, self.action_predictions)
         self.loss = tf.reduce_mean(self.losses)
 
