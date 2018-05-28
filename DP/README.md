@@ -44,3 +44,7 @@
 - Implement Value Iteration in Python (Gridworld)
   - [Exercise](Value%20Iteration.ipynb)
   - [Solution](Value%20Iteration%20Solution.ipynb)
+
+- Implement Gambler's Problem
+  - [Exercise](Gamblers%20Problem.ipynb)
+  - [Solution](Gamblers%20Problem%20Solution.ipynb)
