@@ -37,7 +37,7 @@ All code is written in Python 3 and uses RL environments from [OpenAI Gym](https
 - [Q-Learning with Linear Function Approximation](FA/Q-Learning%20with%20Value%20Function%20Approximation%20Solution.ipynb)
 - [Deep Q-Learning for Atari Games](DQN/Deep%20Q%20Learning%20Solution.ipynb)
 - [Double Deep-Q Learning for Atari Games](DQN/Double%20DQN%20Solution.ipynb)
-- Deep Q-Learning with Prioritized Experience Replay (WIP)
+- [Deep Q-Learning with Prioritized Experience Replay (WIP)] (https://github.com/Kyushik/DRL/blob/master/3_Prioritized_Experience_Replay.py)
 - [Policy Gradient: REINFORCE with Baseline](PolicyGradient/CliffWalk%20REINFORCE%20with%20Baseline%20Solution.ipynb)
 - [Policy Gradient: Actor Critic with Baseline](PolicyGradient/CliffWalk%20Actor%20Critic%20Solution.ipynb)
 - [Policy Gradient: Actor Critic with Baseline for Continuous Action Spaces](PolicyGradient/Continuous%20MountainCar%20Actor%20Critic%20Solution.ipynb)
