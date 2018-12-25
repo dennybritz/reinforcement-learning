@@ -50,7 +50,7 @@ class GridworldEnv(discrete.DiscreteEnv):
             s = it.iterindex
             y, x = it.multi_index
 
-            # P[s][a] = (prob, next_state, reward, done)
+            # P[s][a] = (prob, next_state, reward, is_done)
             P[s] = {a : [] for a in range(nA)}
 
             is_done = lambda s: s == 0 or s == (nS - 1)
