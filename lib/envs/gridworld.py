@@ -1,3 +1,4 @@
+import io
 import numpy as np
 import sys
 from gym.envs.toy_text import discrete
@@ -86,7 +87,7 @@ class GridworldEnv(discrete.DiscreteEnv):
         if close:
             return
 
-        outfile = StringIO() if mode == 'ansi' else sys.stdout
+        outfile = io.StringIO() if mode == 'ansi' else sys.stdout
 
         grid = np.arange(self.nS).reshape(self.shape)
         it = np.nditer(grid, flags=['multi_index'])
@@ -102,7 +103,7 @@ class GridworldEnv(discrete.DiscreteEnv):
                 output = " o "
 
             if x == 0:
-                output = output.lstrip() 
+                output = output.lstrip()
             if x == self.shape[1] - 1:
                 output = output.rstrip()
 
