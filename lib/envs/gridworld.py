@@ -31,6 +31,10 @@ class GridworldEnv(discrete.DiscreteEnv):
     metadata = {'render.modes': ['human', 'ansi']}
 
     def __init__(self, shape=[4,4]):
+        """
+
+
+        """
         if not isinstance(shape, (list, tuple)) or not len(shape) == 2:
             raise ValueError('shape argument must be a list/tuple of length 2')
 
@@ -50,6 +54,7 @@ class GridworldEnv(discrete.DiscreteEnv):
             s = it.iterindex
             y, x = it.multi_index
 
+            # P[s][a] = (prob, next_state, reward, done)
             P[s] = {a : [] for a in range(nA)}
 
             is_done = lambda s: s == 0 or s == (nS - 1)
