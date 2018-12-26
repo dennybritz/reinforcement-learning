@@ -1,3 +1,4 @@
+import io
 import numpy as np
 import sys
 from gym.envs.toy_text import discrete
@@ -49,6 +50,7 @@ class GridworldEnv(discrete.DiscreteEnv):
             s = it.iterindex
             y, x = it.multi_index
 
+            # P[s][a] = (prob, next_state, reward, is_done)
             P[s] = {a : [] for a in range(nA)}
 
             is_done = lambda s: s == 0 or s == (nS - 1)
@@ -83,10 +85,19 @@ class GridworldEnv(discrete.DiscreteEnv):
         super(GridworldEnv, self).__init__(nS, nA, P, isd)
 
     def _render(self, mode='human', close=False):
+        """ Renders the current gridworld layout
+
+         For example, a 4x4 grid with the mode="human" looks like:
+            T  o  o  o
+            o  x  o  o
+            o  o  o  o
+            o  o  o  T
+        where x is your position and T are the two terminal states.
+        """
         if close:
             return
 
-        outfile = StringIO() if mode == 'ansi' else sys.stdout
+        outfile = io.StringIO() if mode == 'ansi' else sys.stdout
 
         grid = np.arange(self.nS).reshape(self.shape)
         it = np.nditer(grid, flags=['multi_index'])
@@ -102,7 +113,7 @@ class GridworldEnv(discrete.DiscreteEnv):
                 output = " o "
 
             if x == 0:
-                output = output.lstrip() 
+                output = output.lstrip()
             if x == self.shape[1] - 1:
                 output = output.rstrip()
 
