@@ -36,7 +36,7 @@ class GridworldEnv(discrete.DiscreteEnv):
 
         self.shape = shape
 
-        nS = np.prod(shape)
+        nS = np.prod(shape)# 元素乘积4*4
         nA = 4
 
         MAX_Y = shape[0]
@@ -51,9 +51,9 @@ class GridworldEnv(discrete.DiscreteEnv):
             y, x = it.multi_index
 
             # P[s][a] = (prob, next_state, reward, is_done)
-            P[s] = {a : [] for a in range(nA)}
+            P[s] = {a : [] for a in range(nA)}# action:[]
 
-            is_done = lambda s: s == 0 or s == (nS - 1)
+            is_done = lambda s: s == 0 or s == (nS - 1)# 人定义公式
             reward = 0.0 if is_done(s) else -1.0
 
             # We're stuck in a terminal state
