@@ -69,6 +69,7 @@ Talks/Tutorials:
 - [John Schulman - Deep Reinforcement Learning (4 Lectures)](https://www.youtube.com/playlist?list=PLjKEIQlKCTZYN3CYBlj8r58SbNorobqcp)
 - [Deep Reinforcement Learning Slides @ NIPS 2016](http://people.eecs.berkeley.edu/~pabbeel/nips-tutorial-policy-optimization-Schulman-Abbeel.pdf)
 - [OpenAI Spinning Up](https://spinningup.openai.com/en/latest/user/introduction.html)
+- [Advanced Deep Learning & Reinforcement Learning (UCL 2018, DeepMind)](https://www.youtube.com/playlist?list=PLqYmG7hTraZDNJre23vqCGIVpfZ_K2RZs)
 
 Other Projects:
 
