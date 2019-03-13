@@ -28,7 +28,7 @@
 
 **Optional:**
 
-- [Reinforcement Learning: An Introduction](http://incompleteideas.net/book/bookdraft2018jan1.pdf) - Chapter 4: Dynamic Programming
+- [Reinforcement Learning: An Introduction](http://incompleteideas.net/book/RLbook2018.pdf) - Chapter 4: Dynamic Programming
 
 
 ### Exercises
