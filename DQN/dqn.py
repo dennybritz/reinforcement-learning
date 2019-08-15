@@ -1,4 +1,5 @@
 import gym
+from gym.wrappers import Monitor
 import itertools
 import numpy as np
 import os
@@ -19,7 +20,7 @@ VALID_ACTIONS = [0, 1, 2, 3]
 
 class StateProcessor():
     """
-    Processes a raw Atari iamges. Resizes it and converts it to grayscale.
+    Processes a raw Atari images. Resizes it and converts it to grayscale.
     """
     def __init__(self):
         # Build the Tensorflow graph
@@ -28,7 +29,7 @@ class StateProcessor():
             self.output = tf.image.rgb_to_grayscale(self.input_state)
             self.output = tf.image.crop_to_bounding_box(self.output, 34, 0, 160, 160)
             self.output = tf.image.resize_images(
-                self.output, 84, 84, method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
+                self.output, [84, 84], method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
             self.output = tf.squeeze(self.output)
 
     def process(self, sess, state):
@@ -38,7 +39,7 @@ class StateProcessor():
             state: A [210, 160, 3] Atari RGB State
 
         Returns:
-            A processed [84, 84, 1] state representing grayscale values.
+            A processed [84, 84] state representing grayscale values.
         """
         return sess.run(self.output, { self.input_state: state })
 
@@ -59,7 +60,7 @@ class Estimator():
                 summary_dir = os.path.join(summaries_dir, "summaries_{}".format(scope))
                 if not os.path.exists(summary_dir):
                     os.makedirs(summary_dir)
-                self.summary_writer = tf.train.SummaryWriter(summary_dir)
+                self.summary_writer = tf.summary.FileWriter(summary_dir)
 
     def _build_model(self):
         """
@@ -94,7 +95,7 @@ class Estimator():
         gather_indices = tf.range(batch_size) * tf.shape(self.predictions)[1] + self.actions_pl
         self.action_predictions = tf.gather(tf.reshape(self.predictions, [-1]), gather_indices)
 
-        # Calcualte the loss
+        # Calculate the loss
         self.losses = tf.squared_difference(self.y_pl, self.action_predictions)
         self.loss = tf.reduce_mean(self.losses)
 
@@ -103,11 +104,11 @@ class Estimator():
         self.train_op = self.optimizer.minimize(self.loss, global_step=tf.contrib.framework.get_global_step())
 
         # Summaries for Tensorboard
-        self.summaries = tf.merge_summary([
-            tf.scalar_summary("loss", self.loss),
-            tf.histogram_summary("loss_hist", self.losses),
-            tf.histogram_summary("q_values_hist", self.predictions),
-            tf.scalar_summary("max_q_value", tf.reduce_max(self.predictions))
+        self.summaries = tf.summary.merge([
+            tf.summary.scalar("loss", self.loss),
+            tf.summary.histogram("loss_hist", self.losses),
+            tf.summary.histogram("q_values_hist", self.predictions),
+            tf.summary.scalar("max_q_value", tf.reduce_max(self.predictions))
         ])
 
 
@@ -207,7 +208,7 @@ def deep_q_learning(sess,
                     batch_size=32,
                     record_video_every=50):
     """
-    Q-Learning algorithm for fff-policy TD control using Function Approximation.
+    Q-Learning algorithm for off-policy TD control using Function Approximation.
     Finds the optimal greedy policy while following an epsilon-greedy policy.
 
     Args:
@@ -223,7 +224,7 @@ def deep_q_learning(sess,
           the reply memory.
         update_target_estimator_every: Copy parameters from the Q estimator to the 
           target estimator every N steps
-        discount_factor: Lambda time discount factor
+        discount_factor: Gamma discount factor
         epsilon_start: Chance to sample a random action when taking an action.
           Epsilon is decayed over time and this is the start value
         epsilon_end: The final minimum value of epsilon after decaying is done
@@ -292,9 +293,11 @@ def deep_q_learning(sess,
             state = next_state
 
     # Record videos
-    env.monitor.start(monitor_path,
-                      resume=True,
-                      video_callable=lambda count: count % record_video_every == 0)
+    # Use the gym env Monitor wrapper
+    env = Monitor(env,
+                  directory=monitor_path,
+                  resume=True,
+                  video_callable=lambda count: count % record_video_every ==0)
 
     for i_episode in range(num_episodes):
 
@@ -398,7 +401,7 @@ target_estimator = Estimator(scope="target_q")
 state_processor = StateProcessor()
 
 with tf.Session() as sess:
-    sess.run(tf.initialize_all_variables())
+    sess.run(tf.global_variables_initializer())
     for t, stats in deep_q_learning(sess,
                                     env,
                                     q_estimator=q_estimator,

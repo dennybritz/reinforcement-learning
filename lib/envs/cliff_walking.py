@@ -53,6 +53,9 @@ class CliffWalkingEnv(discrete.DiscreteEnv):
 
         super(CliffWalkingEnv, self).__init__(nS, nA, P, isd)
 
+    def render(self, mode='human', close=False):
+        self._render(mode, close)
+
     def _render(self, mode='human', close=False):
         if close:
             return

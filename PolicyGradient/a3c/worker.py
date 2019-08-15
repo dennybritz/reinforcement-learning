@@ -85,7 +85,7 @@ class Worker(object):
     # Op to copy params from global policy/valuenets
     self.copy_params_op = make_copy_params_op(
       tf.contrib.slim.get_variables(scope="global", collection=tf.GraphKeys.TRAINABLE_VARIABLES),
-      tf.contrib.slim.get_variables(scope=self.name, collection=tf.GraphKeys.TRAINABLE_VARIABLES))
+      tf.contrib.slim.get_variables(scope=self.name+'/', collection=tf.GraphKeys.TRAINABLE_VARIABLES))
 
     self.vnet_train_op = make_train_op(self.value_net, self.global_value_net)
     self.pnet_train_op = make_train_op(self.policy_net, self.global_policy_net)
