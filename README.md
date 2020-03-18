@@ -1,7 +1,3 @@
-### Important note
-This repo is just a forked from [dennybritz/reinforcement-learning](https://github.com/dennybritz/reinforcement-learning) to help me studying the book of [Reinforcement Learning: An Introduction (2nd Edition)](http://incompleteideas.net/book/RLbook2018.pdf). I have barely contributed to this project (yet).
-
-
 ### Overview
 
 This repository provides code, exercises and solutions for popular Reinforcement Learning algorithms. These are meant to serve as a learning tool to complement the theoretical materials from
