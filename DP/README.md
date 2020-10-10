@@ -24,7 +24,7 @@
 
 **Required:**
 
-- David Silver's RL Course Lecture 3 - Planning by Dynamic Programming ([video](https://www.youtube.com/watch?v=Nd1-UUMVfz4), [slides](http://www0.cs.ucl.ac.uk/staff/d.silver/web/Teaching_files/DP.pdf))
+- David Silver's RL Course Lecture 3 - Planning by Dynamic Programming ([video](https://www.youtube.com/watch?v=Nd1-UUMVfz4), [slides](https://www.davidsilver.uk/wp-content/uploads/2020/03/DP.pdf))
 
 **Optional:**
 
