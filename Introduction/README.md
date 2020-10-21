@@ -8,7 +8,7 @@
 ### Summary
 
 - Reinforcement Learning (RL) is concerned with goal-directed learning and decision-making.
-- In RL an agent learns from experiences it gains by interacting with the environment. In Supervised Learning we cannot affect the environment. 
+- In RL an agent learns from experiences it gains by interacting with the environment. In Supervised Learning we cannot affect the environment. It learns from data.
 - Moreover, RL provides evaluative feedback whereas, supervised learning provides instructive feedback.
 - In RL rewards are often delayed in time and the agent tries to maximize a long-term goal. For example, one may need to make seemingly suboptimal moves to reach a winning position in a game.
 - An agent interacts with the environment via states, actions and rewards.
