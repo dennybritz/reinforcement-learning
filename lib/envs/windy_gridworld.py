@@ -1,7 +1,11 @@
+import io
 import gym
 import numpy as np
 import sys
-from gym.envs.toy_text import discrete
+if "../.." not in sys.path:
+  sys.path.append("../..") 
+
+from lib.envs import discrete
 
 UP = 0
 RIGHT = 1
@@ -60,7 +64,7 @@ class WindyGridworldEnv(discrete.DiscreteEnv):
         if close:
             return
 
-        outfile = StringIO() if mode == 'ansi' else sys.stdout
+        outfile = io.StringIO() if mode == 'ansi' else sys.stdout
 
         for s in range(self.nS):
             position = np.unravel_index(s, self.shape)
