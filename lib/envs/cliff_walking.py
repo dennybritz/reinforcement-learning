@@ -1,12 +1,8 @@
 import io
 import numpy as np
 import sys
-if "../.." not in sys.path:
-  sys.path.append("../..") 
 
-from lib.envs import discrete
-
-
+from . import discrete
 
 UP = 0
 RIGHT = 1
