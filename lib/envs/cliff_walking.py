@@ -1,7 +1,8 @@
+import io
 import numpy as np
 import sys
-from gym.envs.toy_text import discrete
 
+from . import discrete
 
 UP = 0
 RIGHT = 1
@@ -53,11 +54,14 @@ class CliffWalkingEnv(discrete.DiscreteEnv):
 
         super(CliffWalkingEnv, self).__init__(nS, nA, P, isd)
 
+    def render(self, mode='human', close=False):
+        self._render(mode, close)
+
     def _render(self, mode='human', close=False):
         if close:
             return
 
-        outfile = StringIO() if mode == 'ansi' else sys.stdout
+        outfile = io.StringIO() if mode == 'ansi' else sys.stdout
 
         for s in range(self.nS):
             position = np.unravel_index(s, self.shape)

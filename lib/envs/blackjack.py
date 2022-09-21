@@ -79,6 +79,12 @@ class BlackjackEnv(gym.Env):
         self._reset()        # Number of 
         self.nA = 2
 
+    def reset(self):
+        return self._reset()
+
+    def step(self, action):
+        return self._step(action)
+
     def _seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
