@@ -24,7 +24,7 @@
 
 - [Human-Level Control through Deep Reinforcement Learning](http://www.readcube.com/articles/10.1038/nature14236)
 - [Demystifying Deep Reinforcement Learning](https://ai.intel.com/demystifying-deep-reinforcement-learning/)
-- David Silver's RL Course Lecture 6 - Value Function Approximation ([video](https://www.youtube.com/watch?v=UoPei5o4fps), [slides](http://www0.cs.ucl.ac.uk/staff/d.silver/web/Teaching_files/FA.pdf))
+- David Silver's RL Course Lecture 6 - Value Function Approximation ([video](https://www.youtube.com/watch?v=UoPei5o4fps), [slides](https://www.davidsilver.uk/wp-content/uploads/2020/03/FA.pdf))
 
 **Optional:**
 

@@ -32,7 +32,7 @@
 
 **Required:**
 
-- David Silver's RL Course Lecture 7 - Policy Gradient Methods ([video](https://www.youtube.com/watch?v=KHZVXao4qXs), [slides](http://www0.cs.ucl.ac.uk/staff/d.silver/web/Teaching_files/pg.pdf))
+- David Silver's RL Course Lecture 7 - Policy Gradient Methods ([video](https://www.youtube.com/watch?v=KHZVXao4qXs), [slides](https://www.davidsilver.uk/wp-content/uploads/2020/03/pg.pdf))
 
 **Optional:**
 
